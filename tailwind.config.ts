@@ -40,6 +40,9 @@ const config: Config = {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
+        font: {
+          primary: "hsl(var(--primary-text))",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -57,7 +60,7 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       maxWidth: {
-        custom: "1200px",
+        desktop: "2000px",
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],

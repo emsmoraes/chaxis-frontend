@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "./_providers/theme-provider";
+import { LocationProvider } from "./_contexts/LocationContext";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +17,7 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={`antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
+          <LocationProvider>{children}</LocationProvider>
         </ThemeProvider>
       </body>
     </html>

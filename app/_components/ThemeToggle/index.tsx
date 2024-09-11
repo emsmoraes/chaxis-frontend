@@ -32,7 +32,11 @@ function ThemeToggle() {
       onClick={toggleTheme}
       className="bg-transparent text-font-primary hover:bg-transparent"
     >
-      {isDark ? <MdLightMode fontSize={25} /> : <MdDarkMode fontSize={25} />}
+      {isDark ? (
+        <MdLightMode fontSize={25} />
+      ) : (
+        <MdDarkMode fontSize={25} className="text-[#292929]" />
+      )}
     </Button>
   );
 }

@@ -50,7 +50,7 @@ input, textarea, select, button {
     --primary-text: 0 0% 0%;
   }
   .dark {
-    --background: 240 10% 3.9%;
+    --background: 0, 0%, 22%;
     --foreground: 0, 0%, 16%;
     --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;

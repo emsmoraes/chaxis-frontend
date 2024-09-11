@@ -1,12 +1,18 @@
 "use client";
 import { useTheme } from "next-themes";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MdDarkMode } from "react-icons/md";
 import { MdLightMode } from "react-icons/md";
 import { Button } from "../ui/button";
 
 function ThemeToggle() {
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const isDark = theme === "dark";
 
   const toggleTheme = () => {
@@ -16,6 +22,10 @@ function ThemeToggle() {
       setTheme("dark");
     }
   };
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <Button

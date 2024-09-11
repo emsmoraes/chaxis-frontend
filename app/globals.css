@@ -16,6 +16,10 @@ body {
   color: var(--primary-text);
 }
 
+input, textarea, select, button {
+  font-size: 16px;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

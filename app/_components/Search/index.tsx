@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { LuSearch } from "react-icons/lu";
+import { LuSearch, LuSettings2 } from "react-icons/lu";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import {
@@ -20,9 +20,10 @@ const formSchema = z.object({
 
 interface SearchProps {
   defaultValues: z.infer<typeof formSchema>;
+  onClickFilter: () => void;
 }
 
-export default function Search({ defaultValues }: SearchProps) {
+export default function Search({ defaultValues, onClickFilter }: SearchProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues,
@@ -35,9 +36,16 @@ export default function Search({ defaultValues }: SearchProps) {
   return (
     <Form {...form}>
       <form
-        className="flex w-2/3 items-center gap-2"
+        className="flex w-full items-center gap-2"
         onSubmit={form.handleSubmit(onSubmit)}
       >
+        <Button
+          type="button"
+          className="flex h-[45px] min-w-[45px] items-center justify-center rounded-full bg-background p-0 shadow-sm hover:bg-font-primary/20"
+          onClick={onClickFilter}
+        >
+          <LuSettings2 size={20} className="text-font-primary" />
+        </Button>
         <FormField
           control={form.control}
           name="search"

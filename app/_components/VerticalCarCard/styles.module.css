@@ -1,0 +1,60 @@
+.customPrev, .customNext {
+    position: absolute;
+    top: -7px;
+    color: rgb(255, 255, 255);
+    height: 109%;
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .customPrev {
+    left: 0;
+    border-radius: 10px 0 0 0;
+  }
+
+  .customPrev  svg {
+    width: 20px !important;
+    height: 22px !important;
+  }
+  
+  .customNext {
+    right: 0;
+    border-radius: 0 0 0 0;
+  }
+
+  .customNext  svg {
+    width: 20px !important;
+    height: 22px !important;
+  }
+  
+  .customPrev:hover, .customNext:hover {
+    background-color: rgba(0, 0, 0, 0.385); 
+  }
+  
+  .customPrev:focus, .customNext:focus {
+    outline: none; 
+  }
+  
+  .customPrev::after, .customNext::after {
+    display: none;
+  }
+
+  .customBullet {
+    width: 5px;
+    height: 5px;
+    background: rgb(255, 255, 255);
+    opacity: 0.7; 
+    transition: background 0.3s, opacity 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .bulletActive {
+    background: #181818 !important; 
+    opacity: 1;
+  }
+  

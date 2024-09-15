@@ -17,6 +17,7 @@ import { LuMapPin } from "react-icons/lu";
 import { Vehicle } from "@/app/_models/vehicle.model";
 import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
+import useVehicleStore from "@/app/_stores/vehicleStore";
 
 interface HorizontalCarCardProps {
   vehicle: Vehicle;
@@ -24,6 +25,7 @@ interface HorizontalCarCardProps {
 
 function HorizontalCarCard({ vehicle }: HorizontalCarCardProps) {
   const sliderRef = useRef(null);
+  const addVehicle = useVehicleStore((state) => state.addVehicle);
 
   const handlePrev = useCallback(() => {
     if (!sliderRef.current) return;
@@ -34,6 +36,10 @@ function HorizontalCarCard({ vehicle }: HorizontalCarCardProps) {
     if (!sliderRef.current) return;
     (sliderRef as any).current.swiper.slideNext();
   }, []);
+
+  const addVehicleToStore = () => {
+    addVehicle(vehicle);
+  };
 
   return (
     <Card className="flex w-full flex-row rounded-3xl dark:bg-[#161616]">
@@ -75,7 +81,10 @@ function HorizontalCarCard({ vehicle }: HorizontalCarCardProps) {
           <SlArrowRight size={5} />
         </button>
       </CardHeader>
-      <CardContent className="flex w-[50%] flex-col justify-between p-3">
+      <CardContent
+        className="flex w-[50%] flex-col justify-between p-3"
+        onClick={addVehicleToStore}
+      >
         <div>
           <CardTitle className="text-sm font-bold text-font-primary">
             {vehicle.model}

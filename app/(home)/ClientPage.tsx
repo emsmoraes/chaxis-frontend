@@ -9,6 +9,7 @@ import VerticalCarCard from "../_components/VerticalCarCard";
 import { Vehicle } from "../_models/vehicle.model";
 import HorizontalCarCard from "../_components/HorizontalCarCard";
 import { useResponsive } from "../_hooks/useResponsive";
+import useVehicleStore from "../_stores/vehicleStore";
 
 interface ClientPageProps {
   recentAddedVehicles?: Vehicle[];
@@ -18,6 +19,7 @@ export default function ClientPage({
   recentAddedVehicles = [],
 }: ClientPageProps) {
   const [isOpenFilters, setIsOpenFilters] = useState(false);
+  const recentAccessVehicles = useVehicleStore((state) => state.vehicles);
 
   const { isSmall } = useResponsive();
 
@@ -50,6 +52,27 @@ export default function ClientPage({
               />
             </div>
             {!isOpenFilters && <ListCategories />}
+            {recentAccessVehicles && recentAccessVehicles.length > 0 && (
+              <>
+                <h2 className="w-full px-2 pb-6 pt-10 text-start text-[17px] font-semibold dark:text-[#6A6A6A] md:px-0">
+                  Suas ultimas visualizações
+                </h2>
+                <div
+                  className={`grid w-full grid-cols-1 gap-3 px-2 sm:grid-cols-2 md:grid-cols-3 md:px-0 ${
+                    isOpenFilters ? "lg:grid-cols-4" : "lg:grid-cols-5"
+                  }`}
+                >
+                  {recentAccessVehicles.map((vehicle) =>
+                    isSmall ? (
+                      <HorizontalCarCard vehicle={vehicle} key={vehicle.id} />
+                    ) : (
+                      <VerticalCarCard vehicle={vehicle} key={vehicle.id} />
+                    ),
+                  )}
+                </div>
+              </>
+            )}
+
             <h2 className="w-full px-2 pb-6 pt-10 text-start text-[17px] font-semibold dark:text-[#6A6A6A] md:px-0">
               Publicados recentemente
             </h2>

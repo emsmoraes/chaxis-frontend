@@ -19,6 +19,7 @@ import { LuMapPin } from "react-icons/lu";
 import { Button } from "../ui/button";
 import { BsArrowRightShort } from "react-icons/bs";
 import { Vehicle } from "@/app/_models/vehicle.model";
+import useVehicleStore from "@/app/_stores/vehicleStore";
 
 interface VerticalCarCardProps {
   vehicle: Vehicle;
@@ -26,6 +27,7 @@ interface VerticalCarCardProps {
 
 function VerticalCarCard({ vehicle }: VerticalCarCardProps) {
   const sliderRef = useRef(null);
+  const addVehicle = useVehicleStore((state) => state.addVehicle);
 
   const handlePrev = useCallback(() => {
     if (!sliderRef.current) return;
@@ -37,8 +39,12 @@ function VerticalCarCard({ vehicle }: VerticalCarCardProps) {
     (sliderRef as any).current.swiper.slideNext();
   }, []);
 
+  const addVehicleToStore = () => {
+    addVehicle(vehicle);
+  };
+
   return (
-    <Card className="w-full rounded-3xl dark:bg-[#161616]">
+    <Card className="w-full cursor-pointer rounded-3xl dark:bg-[#161616]">
       <CardHeader className="group relative h-[170px] w-full overflow-hidden rounded-t-3xl p-0">
         <Swiper
           ref={sliderRef}
@@ -77,7 +83,7 @@ function VerticalCarCard({ vehicle }: VerticalCarCardProps) {
           <SlArrowRight size={5} />
         </button>
       </CardHeader>
-      <CardContent className="group p-3">
+      <CardContent className="group p-3" onClick={addVehicleToStore}>
         <CardTitle className="text-sm font-bold text-font-primary">
           {vehicle.model}
         </CardTitle>

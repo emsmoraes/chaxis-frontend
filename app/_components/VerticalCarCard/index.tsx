@@ -102,7 +102,7 @@ function VerticalCarCard({ vehicle }: VerticalCarCardProps) {
 
         <div className="mt-2 flex w-full items-center justify-between">
           <div className="w-full">
-            <h2 className="overflow-hidden text-ellipsis text-nowrap text-base font-bold text-font-primary">
+            <h2 className="overflow-hidden text-ellipsis text-nowrap text-lg font-bold text-font-primary">
               <span className="text-[14px]">R$</span> {vehicle.price}
             </h2>
             <div className="flex gap-1">

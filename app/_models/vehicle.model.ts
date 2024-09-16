@@ -1,3 +1,4 @@
+import { Brand } from "./brand.model";
 import { Store } from "./store.model";
 
 export interface VehicleImage {
@@ -33,4 +34,5 @@ export interface Vehicle {
   updatedAt: string;
   VehicleImage: VehicleImage[];
   store: Store;
+  make: Brand;
 }

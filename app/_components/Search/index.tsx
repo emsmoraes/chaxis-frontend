@@ -21,9 +21,14 @@ const formSchema = z.object({
 interface SearchProps {
   defaultValues: z.infer<typeof formSchema>;
   onClickFilter: () => void;
+  emphasisFilterButton: boolean;
 }
 
-export default function Search({ defaultValues, onClickFilter }: SearchProps) {
+export default function Search({
+  defaultValues,
+  onClickFilter,
+  emphasisFilterButton,
+}: SearchProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues,
@@ -41,10 +46,10 @@ export default function Search({ defaultValues, onClickFilter }: SearchProps) {
       >
         <Button
           type="button"
-          className="flex h-[45px] min-w-[45px] items-center justify-center rounded-full bg-background p-0 shadow-sm hover:bg-font-primary/20"
+          className={`flex h-[45px] min-w-[45px] items-center justify-center rounded-full bg-background p-0 shadow-sm ${emphasisFilterButton ? "bg-font-primary text-card hover:bg-font-primary/50" : "bg-background text-font-primary hover:bg-font-primary/40"}`}
           onClick={onClickFilter}
         >
-          <LuSettings2 size={20} className="text-font-primary" />
+          <LuSettings2 size={20} />
         </Button>
         <FormField
           control={form.control}

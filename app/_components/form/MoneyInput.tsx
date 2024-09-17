@@ -1,6 +1,6 @@
 "use client";
 
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import {
   FormControl,
   FormField,
@@ -49,6 +49,15 @@ export default function MoneyInput({
     const realValue = Number(digits) / 100;
     realChangeFn(realValue);
   };
+
+  const formData = form.watch(name);
+
+  useEffect(() => {
+    const formValue = moneyFormatter.format(Number(formData));
+    if (formValue !== value) {
+      setValue(formValue);
+    }
+  }, [formData, value]);
 
   return (
     <FormField

@@ -13,6 +13,7 @@ import {
   FormItem,
   FormMessage,
 } from "../ui/form";
+import { useRef } from "react";
 
 const formSchema = z.object({
   search: z.string().trim().optional(),
@@ -34,6 +35,8 @@ export default function Search({
     defaultValues,
   });
 
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log(data.search);
   };
@@ -45,9 +48,18 @@ export default function Search({
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <Button
+          ref={buttonRef}
           type="button"
           className={`flex h-[45px] min-w-[45px] items-center justify-center rounded-full bg-background p-0 shadow-sm ${emphasisFilterButton ? "bg-font-primary text-card hover:bg-font-primary/50" : "bg-background text-font-primary hover:bg-font-primary/40"}`}
-          onClick={onClickFilter}
+          onClick={() => {
+            if (buttonRef.current && !emphasisFilterButton) {
+              buttonRef.current.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+            }
+            onClickFilter();
+          }}
         >
           <LuSettings2 size={20} />
         </Button>

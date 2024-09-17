@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -61,8 +62,11 @@ const filtersSchema = z.object({
   transmissionType: z.string().optional(),
 });
 
+export type IFilters = z.infer<typeof filtersSchema>;
+
 interface VehiclesFilterProps {
-  defaultValues?: z.infer<typeof filtersSchema>;
+  defaultValues?: IFilters;
+  onApplyFilters: (filters: IFilters) => void;
 }
 
 const getUfCities = async (uf: string) => {
@@ -81,7 +85,10 @@ const getUfCities = async (uf: string) => {
   }
 };
 
-function VehiclesFilter({ defaultValues }: VehiclesFilterProps) {
+function VehiclesFilter({
+  defaultValues,
+  onApplyFilters,
+}: VehiclesFilterProps) {
   const [uf, setUf] = useState("all");
   const [cities, setCities] = useState([]);
   const [searchCities, setSearchCities] = useState("");
@@ -96,13 +103,33 @@ function VehiclesFilter({ defaultValues }: VehiclesFilterProps) {
     }
   }, [brands, fetchBrands]);
 
-  const form = useForm<z.infer<typeof filtersSchema>>({
+  const form = useForm<IFilters>({
     resolver: zodResolver(filtersSchema),
     defaultValues,
   });
 
-  const onSubmit = (data: z.infer<typeof filtersSchema>) => {
-    console.log(data);
+  const onSubmit = (data: IFilters) => {
+    const transformedData = Object.entries(data).reduce((acc, [key, value]) => {
+      const typedKey = key as keyof IFilters;
+
+      if (typeof value === "string" && value.toLowerCase() === "all") {
+        acc[typedKey] = "";
+      } else if (typeof value === "object" && value !== null) {
+        acc[typedKey] = Object.entries(value).reduce(
+          (subAcc, [subKey, subValue]) => {
+            (subAcc as any)[subKey] = subValue === "all" ? "" : subValue;
+            return subAcc;
+          },
+          {} as typeof value,
+        );
+      } else {
+        acc[typedKey] = value;
+      }
+
+      return acc;
+    }, {} as IFilters);
+
+    onApplyFilters(transformedData);
   };
 
   const handleUfChange = (value: string) => {
@@ -137,6 +164,36 @@ function VehiclesFilter({ defaultValues }: VehiclesFilterProps) {
     return selected
       ? "shadow-md w-fit rounded-[24px] px-3 py-4 text-[13px] capitalize"
       : "bg-background text-font-primary shadow-md w-fit rounded-[24px] px-3 py-4 text-[13px] capitalize hover:bg-font-primary/10";
+  };
+
+  const handleClearFilters = () => {
+    form.reset({
+      state: "all",
+      city: undefined,
+      brand: undefined,
+      price: {
+        min: undefined,
+        max: undefined,
+      },
+      mileage: {
+        min: undefined,
+        max: undefined,
+      },
+      year: {
+        min: undefined,
+        max: undefined,
+      },
+      manufacturingYear: {
+        min: undefined,
+        max: undefined,
+      },
+      transmissionType: "all",
+    });
+    setUf("all");
+    setCities([]);
+    setSearchCities("");
+    setSearchBrands("");
+    setSelectedTransmission("all");
   };
 
   useEffect(() => {
@@ -300,12 +357,16 @@ function VehiclesFilter({ defaultValues }: VehiclesFilterProps) {
         </div>
         <div className="flex w-full items-center gap-2">
           <Button
+            onClick={handleClearFilters}
             className="w-1/2 rounded-[24px] px-3 py-4 text-[13px] font-medium"
             variant={"outline"}
           >
             Limpar
           </Button>
-          <Button className="w-1/2 rounded-[24px] px-3 py-4 text-[13px] font-medium">
+          <Button
+            type="submit"
+            className="w-1/2 rounded-[24px] px-3 py-4 text-[13px] font-medium"
+          >
             Aplicar
           </Button>
         </div>

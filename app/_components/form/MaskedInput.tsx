@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FormControl,
   FormField,
@@ -40,6 +40,15 @@ export default function MaskedInput({
   ) => {
     realChangeFn(newValue);
   };
+
+  const formData = form.watch(name);
+
+  useEffect(() => {
+    const formattedValue = formData ? `${Number(formData)}` : "";
+    if (formattedValue !== value) {
+      setValue(formattedValue);
+    }
+  }, [formData, value]);
 
   return (
     <FormField

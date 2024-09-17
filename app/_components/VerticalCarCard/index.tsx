@@ -85,7 +85,7 @@ function VerticalCarCard({ vehicle }: VerticalCarCardProps) {
       </CardHeader>
       <CardContent className="group p-3" onClick={addVehicleToStore}>
         <CardTitle className="text-sm font-bold text-font-primary">
-          {vehicle.model}
+          {vehicle.make.name} {vehicle.model}
         </CardTitle>
         <h2 className="text-[13px] font-medium text-font-primary/80">
           {vehicle.version}

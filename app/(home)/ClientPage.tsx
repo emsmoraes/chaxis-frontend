@@ -9,7 +9,7 @@ import { Vehicle } from "../_models/vehicle.model";
 import HorizontalCarCard from "../_components/HorizontalCarCard";
 import { useResponsive } from "../_hooks/useResponsive";
 import useVehicleStore from "../_stores/vehicleStore";
-import VehiclesFilter from "../_components/VehiclesFilter";
+import VehiclesFilter, { IFilters } from "../_components/VehiclesFilter";
 
 interface ClientPageProps {
   recentAddedVehicles?: Vehicle[];
@@ -20,12 +20,19 @@ export default function ClientPage({
 }: ClientPageProps) {
   const [isOpenFilters, setIsOpenFilters] = useState(false);
   const recentAccessVehicles = useVehicleStore((state) => state.vehicles);
+  const [filters, setFilters] = useState<IFilters>();
 
   const { isSmall } = useResponsive();
 
   const toggleOpenFilters = () => {
     setIsOpenFilters((oldValue) => !oldValue);
   };
+
+  const onApplyFilters = (filters: IFilters) => {
+    setFilters(filters);
+  };
+
+  console.log(filters);
 
   return (
     <div className="w-full">
@@ -36,7 +43,7 @@ export default function ClientPage({
             <div
               className={`sticky top-3 h-[96vh] w-[320px] rounded-3xl bg-foreground p-4 lg:pr-2`}
             >
-              <VehiclesFilter />
+              <VehiclesFilter onApplyFilters={onApplyFilters} />
             </div>
           )}
 

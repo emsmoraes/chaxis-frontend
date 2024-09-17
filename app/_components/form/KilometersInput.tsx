@@ -1,6 +1,6 @@
 "use client";
 
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import {
   FormControl,
   FormField,
@@ -44,6 +44,17 @@ export default function KilometersInput({
       realChangeFn(realValue);
     }
   };
+
+  const formData = form.watch(name);
+
+  useEffect(() => {
+    const formattedValue = formData
+      ? `${Number(formData).toLocaleString("pt-BR")}`
+      : "";
+    if (formattedValue !== value) {
+      setValue(formattedValue);
+    }
+  }, [formData, value]);
 
   return (
     <FormField

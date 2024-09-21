@@ -10,6 +10,7 @@ import HorizontalCarCard from "../_components/HorizontalCarCard";
 import { useResponsive } from "../_hooks/useResponsive";
 import useVehicleStore from "../_stores/vehicleStore";
 import VehiclesFilter, { IFilters } from "../_components/VehiclesFilter";
+import { useLocationFetcher } from "../_hooks/useLocationFetcher";
 
 interface ClientPageProps {
   recentAddedVehicles?: Vehicle[];
@@ -21,6 +22,7 @@ export default function ClientPage({
   const [isOpenFilters, setIsOpenFilters] = useState(false);
   const recentAccessVehicles = useVehicleStore((state) => state.vehicles);
   const [filters, setFilters] = useState<IFilters>();
+  const { location } = useLocationFetcher();
 
   const { isSmall } = useResponsive();
 
@@ -30,6 +32,11 @@ export default function ClientPage({
 
   const onApplyFilters = (filters: IFilters) => {
     setFilters(filters);
+  };
+
+  const getLastItemAfterHyphen = (state: string): string => {
+    const parts = state.split("-");
+    return parts.length > 1 ? parts[parts.length - 1].trim() : "";
   };
 
   console.log(filters);
@@ -43,7 +50,14 @@ export default function ClientPage({
             <div
               className={`sticky top-3 h-[96vh] w-[320px] rounded-3xl bg-foreground p-4 lg:pr-2`}
             >
-              <VehiclesFilter onApplyFilters={onApplyFilters} />
+              <VehiclesFilter
+                onApplyFilters={onApplyFilters}
+                defaultValues={{
+                  state: location.address.state
+                    ? getLastItemAfterHyphen(location.address.state)
+                    : "",
+                }}
+              />
             </div>
           )}
 

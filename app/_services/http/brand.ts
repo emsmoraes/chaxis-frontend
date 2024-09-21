@@ -1,8 +1,6 @@
 import { Brand } from "@/app/_models/brand.model";
 
-export interface BrandsResponse {
-  brands: Brand[];
-}
+export type BrandsResponse = Brand[];
 
 export async function getBrands(): Promise<BrandsResponse> {
   const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;

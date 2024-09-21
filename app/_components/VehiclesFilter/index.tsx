@@ -200,6 +200,12 @@ function VehiclesFilter({
     fetchCities();
   }, [fetchCities]);
 
+  useEffect(() => {
+    if (defaultValues && defaultValues.state) {
+      setUf(defaultValues.state);
+    }
+  }, [defaultValues]);
+
   return (
     <Form {...form}>
       <form

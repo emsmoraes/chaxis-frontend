@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "./_providers/theme-provider";
-import { LocationProvider } from "./_contexts/LocationContext";
 import Navbar from "./_components/Navbar";
 
 export const metadata: Metadata = {
@@ -19,7 +18,7 @@ export default function RootLayout({
       <body className={`antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="light">
           <Navbar />
-          <LocationProvider>{children}</LocationProvider>
+          {children}
         </ThemeProvider>
       </body>
     </html>

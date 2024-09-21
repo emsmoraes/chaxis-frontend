@@ -71,9 +71,8 @@ function BrandCombobox({
               !field.value && "text-font-primary",
             )}
           >
-            {field.value
-              ? filteredBrands.find((brand) => brand.name === field.value)?.name
-              : "Selecione uma marca"}
+            {field.value || "Selecione uma marca"}
+
             <ChevronDown className="h-4 w-4 opacity-50" />
           </Button>
         </FormControl>
@@ -89,21 +88,25 @@ function BrandCombobox({
           <CommandList>
             <CommandEmpty>Sem resultados para {search}</CommandEmpty>
             <CommandGroup>
-              {sortedBrands.map((brand) => (
-                <CommandItem
-                  key={brand.id}
-                  onSelect={() => handleSelect(brand.name)}
-                  className="text-font-primary"
-                >
-                  {brand.name}
-                  <IoMdCheckmark
-                    className={cn(
-                      "ml-auto h-4 w-4",
-                      brand.name === field.value ? "opacity-100" : "opacity-0",
-                    )}
-                  />
-                </CommandItem>
-              ))}
+              {sortedBrands.map((brand) =>
+                brand && brand.name ? (
+                  <CommandItem
+                    key={brand.id}
+                    onSelect={() => handleSelect(brand.name)}
+                    className="text-font-primary"
+                  >
+                    {brand.name}
+                    <IoMdCheckmark
+                      className={cn(
+                        "ml-auto h-4 w-4",
+                        brand.name === field.value
+                          ? "opacity-100"
+                          : "opacity-0",
+                      )}
+                    />
+                  </CommandItem>
+                ) : null,
+              )}
             </CommandGroup>
           </CommandList>
         </Command>

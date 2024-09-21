@@ -20,8 +20,8 @@ export const useBrandStore = create(
       fetchBrands: async () => {
         set({ loading: true, error: null });
         try {
-          const { brands } = await getBrands();
-          set({ brands, loading: false });
+          const brands = await getBrands();
+          set({ brands: brands, loading: false });
         } catch (error) {
           set({
             error:

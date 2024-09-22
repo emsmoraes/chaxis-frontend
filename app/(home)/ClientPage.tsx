@@ -3,7 +3,7 @@
 import HomeBanner from "./_components/HomeBanner";
 import Search from "../_components/Search";
 import ListCategories from "../_components/ListCategories";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import VerticalCarCard from "../_components/VerticalCarCard";
 import { Vehicle } from "../_models/vehicle.model";
 import HorizontalCarCard from "../_components/HorizontalCarCard";
@@ -16,13 +16,21 @@ interface ClientPageProps {
   recentAddedVehicles?: Vehicle[];
 }
 
+const getLastItemAfterHyphen = (state: string): string => {
+  const parts = state.split("-");
+  return parts.length > 1 ? parts[parts.length - 1].trim() : "";
+};
+
 export default function ClientPage({
   recentAddedVehicles = [],
 }: ClientPageProps) {
   const [isOpenFilters, setIsOpenFilters] = useState(false);
   const recentAccessVehicles = useVehicleStore((state) => state.vehicles);
-  const [filters, setFilters] = useState<IFilters>();
+  const [filters, setFilters] = useState<IFilters | null>(null);
   const { location } = useLocationFetcher();
+  const [defaultState, setDefaultState] = useState<undefined | string>(
+    getLastItemAfterHyphen(location.address.state ?? ""),
+  );
 
   const { isSmall } = useResponsive();
 
@@ -32,30 +40,35 @@ export default function ClientPage({
 
   const onApplyFilters = (filters: IFilters) => {
     setFilters(filters);
+    setIsOpenFilters(false);
   };
 
-  const getLastItemAfterHyphen = (state: string): string => {
-    const parts = state.split("-");
-    return parts.length > 1 ? parts[parts.length - 1].trim() : "";
+  const onClearFilters = () => {
+    setFilters(null);
+    setDefaultState(undefined);
   };
 
-  console.log(filters);
+  const defaultFiltersValues = filters !== null ? filters : null;
+
+  useEffect(() => {
+    setDefaultState(getLastItemAfterHyphen(location.address.state ?? ""));
+  }, [location]);
 
   return (
     <div className="w-full">
       <HomeBanner />
       <div className="flex w-full items-center justify-center">
         <div className="mt-4 flex min-h-[1000px] w-full max-w-desktop gap-4 md:w-[95%]">
-          {!isSmall && isOpenFilters && (
+          {!isSmall && (
             <div
-              className={`sticky top-3 h-[96vh] w-[320px] rounded-3xl bg-foreground p-4 lg:pr-2`}
+              className={`${isOpenFilters ? "sticky" : "hidden"} top-6 h-[92vh] w-[320px] rounded-3xl bg-foreground p-4 lg:pr-2`}
             >
               <VehiclesFilter
                 onApplyFilters={onApplyFilters}
+                onClearFilters={onClearFilters}
                 defaultValues={{
-                  state: location.address.state
-                    ? getLastItemAfterHyphen(location.address.state)
-                    : "",
+                  ...defaultFiltersValues,
+                  state: filters === null ? defaultState : filters.state,
                 }}
               />
             </div>
@@ -67,7 +80,8 @@ export default function ClientPage({
             >
               <Search
                 onClickFilter={toggleOpenFilters}
-                emphasisFilterButton={isOpenFilters}
+                filters={filters}
+                emphasisFilterButton={isOpenFilters || filters !== null}
                 defaultValues={{
                   search: "",
                 }}

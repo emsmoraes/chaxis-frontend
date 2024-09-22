@@ -53,7 +53,9 @@ function CitiesCombobox({
 
   const sortedCities = field.value
     ? [
-        filteredCities.find((city) => city.nome === field.value)!,
+        ...(filteredCities.find((city) => city.nome === field.value)
+          ? [filteredCities.find((city) => city.nome === field.value)!]
+          : []),
         ...filteredCities.filter((city) => city.nome !== field.value),
       ]
     : filteredCities;

@@ -87,7 +87,7 @@ function HorizontalCarCard({ vehicle }: HorizontalCarCardProps) {
       >
         <div>
           <CardTitle className="text-sm font-bold text-font-primary">
-            {vehicle.model}
+            {vehicle.make.name} {vehicle.model}
           </CardTitle>
           <h2 className="text-[13px] font-medium text-font-primary/80">
             {vehicle.version}

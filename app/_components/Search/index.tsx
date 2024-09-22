@@ -14,6 +14,8 @@ import {
   FormMessage,
 } from "../ui/form";
 import { useRef } from "react";
+import { IFilters } from "../VehiclesFilter";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   search: z.string().trim().optional(),
@@ -23,12 +25,14 @@ interface SearchProps {
   defaultValues: z.infer<typeof formSchema>;
   onClickFilter: () => void;
   emphasisFilterButton: boolean;
+  filters?: IFilters | null;
 }
 
 export default function Search({
   defaultValues,
   onClickFilter,
   emphasisFilterButton,
+  filters = null,
 }: SearchProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -36,9 +40,47 @@ export default function Search({
   });
 
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const router = useRouter();
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data.search);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const isFilled = (value: any) => {
+      return (
+        value !== null && value !== undefined && value !== "" && value !== "all"
+      );
+    };
+
+    const queryParams: string[] = [];
+
+    queryParams.push(`search=${data.search || ""}`);
+
+    if (filters) {
+      if (isFilled(filters.city)) queryParams.push(`city=${filters.city}`);
+      if (isFilled(filters.state)) queryParams.push(`state=${filters.state}`);
+      if (isFilled(filters.brand)) queryParams.push(`brand=${filters.brand}`);
+
+      if (isFilled(filters.price?.min))
+        queryParams.push(`priceMin=${filters.price?.min}`);
+      if (isFilled(filters.price?.max))
+        queryParams.push(`priceMax=${filters.price?.max}`);
+
+      if (isFilled(filters.year?.min))
+        queryParams.push(`yearMin=${filters.year?.min}`);
+      if (isFilled(filters.year?.max))
+        queryParams.push(`yearMax=${filters.year?.max}`);
+
+      if (isFilled(filters.mileage?.min))
+        queryParams.push(`mileageMin=${filters.mileage?.min}`);
+      if (isFilled(filters.mileage?.max))
+        queryParams.push(`mileageMax=${filters.mileage?.max}`);
+
+      if (isFilled(filters.transmissionType))
+        queryParams.push(`transmissionType=${filters.transmissionType}`);
+    }
+
+    const queryString = `?${queryParams.join("&")}`;
+
+    router.push(`/vehicles${queryString}`);
   };
 
   return (
@@ -69,11 +111,12 @@ export default function Search({
           render={({ field }) => (
             <FormItem className="w-full">
               <FormControl>
-                <div className="flex w-full items-center py-4">
+                <div className="relative w-full py-4">
                   <LuSearch
                     size={21}
-                    className="relative left-9 text-muted-foreground"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 transform text-muted-foreground"
                   />
+
                   <Input
                     placeholder="Pesquise um modelo de carro..."
                     className="w-full rounded-[24px] py-5 pl-12 text-[15px] font-medium"

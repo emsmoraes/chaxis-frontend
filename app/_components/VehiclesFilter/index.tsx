@@ -67,6 +67,7 @@ export type IFilters = z.infer<typeof filtersSchema>;
 interface VehiclesFilterProps {
   defaultValues?: IFilters;
   onApplyFilters: (filters: IFilters) => void;
+  onClearFilters: () => void;
 }
 
 const getUfCities = async (uf: string) => {
@@ -88,6 +89,7 @@ const getUfCities = async (uf: string) => {
 function VehiclesFilter({
   defaultValues,
   onApplyFilters,
+  onClearFilters,
 }: VehiclesFilterProps) {
   const [uf, setUf] = useState("all");
   const [cities, setCities] = useState([]);
@@ -168,7 +170,7 @@ function VehiclesFilter({
 
   const handleClearFilters = () => {
     form.reset({
-      state: "all",
+      state: "",
       city: undefined,
       brand: undefined,
       price: {
@@ -189,11 +191,13 @@ function VehiclesFilter({
       },
       transmissionType: "all",
     });
-    setUf("all");
+    setUf("");
     setCities([]);
     setSearchCities("");
     setSearchBrands("");
     setSelectedTransmission("all");
+
+    onClearFilters();
   };
 
   useEffect(() => {
@@ -202,17 +206,19 @@ function VehiclesFilter({
 
   useEffect(() => {
     if (defaultValues && defaultValues.state) {
+      console.log(defaultValues.state);
       setUf(defaultValues.state);
+      form.setValue("state", defaultValues.state);
     }
-  }, [defaultValues]);
+    if (defaultValues && defaultValues.transmissionType) {
+      setSelectedTransmission(defaultValues.transmissionType);
+    }
+  }, [defaultValues, form]);
 
   return (
     <Form {...form}>
-      <form
-        className="flex max-h-full w-full flex-col items-center gap-4"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
-        <div className="flex flex-1 flex-col gap-3 overflow-y-scroll pb-10 lg:pr-2">
+      <form className="flex max-h-full w-full flex-col items-center gap-4">
+        <div className="flex flex-1 flex-col gap-3 overflow-y-scroll pb-10 lg:pr-2 [&&::-webkit-scrollbar]:hidden md:[&&::-webkit-scrollbar]:block">
           <FormField
             control={form.control}
             name="state"
@@ -257,7 +263,7 @@ function VehiclesFilter({
                     field={field}
                     search={searchCities}
                     setSearch={setSearchCities}
-                    disabled={uf === "all" || cities.length < 0}
+                    disabled={uf === "all" || uf === "" || cities.length < 0}
                     onCityChange={(value) => form.setValue("city", value)}
                   />
                 </FormControl>
@@ -338,6 +344,7 @@ function VehiclesFilter({
             <FormLabel className="w-full text-start">Tipo de Câmbio</FormLabel>
             <div className="flex flex-wrap gap-2">
               <Button
+                type="button"
                 onClick={() => {
                   handleChangeTransmission("all");
                 }}
@@ -349,6 +356,7 @@ function VehiclesFilter({
               </Button>
               {transmissions.map((transmission) => (
                 <Button
+                  type="button"
                   onClick={() => handleChangeTransmission(transmission.alias)}
                   key={transmission.alias}
                   className={selectedTransmissionStyle(
@@ -363,6 +371,7 @@ function VehiclesFilter({
         </div>
         <div className="flex w-full items-center gap-2">
           <Button
+            type="button"
             onClick={handleClearFilters}
             className="w-1/2 rounded-[24px] px-3 py-4 text-[13px] font-medium"
             variant={"outline"}
@@ -370,7 +379,8 @@ function VehiclesFilter({
             Limpar
           </Button>
           <Button
-            type="submit"
+            type="button"
+            onClick={() => form.handleSubmit(onSubmit)()}
             className="w-1/2 rounded-[24px] px-3 py-4 text-[13px] font-medium"
           >
             Aplicar

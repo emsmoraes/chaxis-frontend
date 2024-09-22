@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import React from "react";
 import DarkLogo from "@/app/_assets/images/logo-dark.png";
@@ -6,7 +7,6 @@ import LightLogo from "@/app/_assets/images/logo-white.png";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import MenuSheet from "./MenuSheet";
-import FiltersSheet from "./FiltersSheet";
 import SearchSheet from "./SearchSheet";
 
 function Mobile() {
@@ -28,8 +28,11 @@ function Mobile() {
       </Link>
 
       <div className="flex items-center">
-        <SearchSheet />
-        <FiltersSheet />
+        <SearchSheet
+          defaultValues={{
+            search: "",
+          }}
+        />
         <MenuSheet />
       </div>
     </div>

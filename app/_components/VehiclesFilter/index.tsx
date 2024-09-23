@@ -205,15 +205,29 @@ function VehiclesFilter({
   }, [fetchCities]);
 
   useEffect(() => {
-    if (defaultValues && defaultValues.state) {
-      console.log(defaultValues.state);
-      setUf(defaultValues.state);
-      form.setValue("state", defaultValues.state);
+    if (defaultValues) {
+      const fieldsToUpdate: { [key: string]: (value: any) => void } = {
+        city: (value: string) => form.setValue("city", value),
+        state: (value: string) => {
+          setUf(value);
+          form.setValue("state", value);
+        },
+        transmissionType: (value: string) => setSelectedTransmission(value),
+        price: (value: any) => form.setValue("price", value),
+        mileage: (value: any) => form.setValue("mileage", value),
+        year: (value: any) => form.setValue("year", value),
+        manufacturingYear: (value: any) =>
+          form.setValue("manufacturingYear", value),
+        brand: (value: string) => form.setValue("brand", value),
+      };
+
+      (Object.keys(fieldsToUpdate) as (keyof any)[]).forEach((key) => {
+        if (defaultValues[key]) {
+          fieldsToUpdate[key]?.(defaultValues[key] as string);
+        }
+      });
     }
-    if (defaultValues && defaultValues.transmissionType) {
-      setSelectedTransmission(defaultValues.transmissionType);
-    }
-  }, [defaultValues, form]);
+  }, [defaultValues, form, setUf, setSelectedTransmission]);
 
   return (
     <Form {...form}>

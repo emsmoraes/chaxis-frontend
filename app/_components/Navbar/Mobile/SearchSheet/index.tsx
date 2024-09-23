@@ -36,10 +36,11 @@ const getLastItemAfterHyphen = (state: string): string => {
 
 interface SearchSheetProps {
   defaultValues: z.infer<typeof formSchema>;
+  setFilters: React.Dispatch<React.SetStateAction<IFilters | null>>;
+  filters: IFilters | null;
 }
 
-function SearchSheet({ defaultValues }: SearchSheetProps) {
-  const [filters, setFilters] = useState<IFilters | null>(null);
+function SearchSheet({ defaultValues, filters, setFilters }: SearchSheetProps) {
   const { location } = useLocationFetcher();
   const [defaultState, setDefaultState] = useState<undefined | string>(
     getLastItemAfterHyphen(location.address.state ?? ""),

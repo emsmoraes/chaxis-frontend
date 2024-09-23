@@ -52,7 +52,9 @@ export default function Search({
 
     const queryParams: string[] = [];
 
-    queryParams.push(`search=${data.search || ""}`);
+    if (isFilled(data.search)) {
+      queryParams.push(`search=${data.search}`);
+    }
 
     if (filters) {
       if (isFilled(filters.city)) queryParams.push(`city=${filters.city}`);

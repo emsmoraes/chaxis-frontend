@@ -11,6 +11,7 @@ import { getVehicles } from "../_services/http/vehicles";
 import HorizontalCarCard from "../_components/HorizontalCarCard";
 import VerticalCarCard from "../_components/VerticalCarCard";
 import { useInView } from "react-intersection-observer";
+import VehiclesSearchMenu from "./_components/VehiclesSearchMenu";
 
 function Vehicles() {
   const searchParams = useSearchParams();
@@ -67,6 +68,8 @@ function Vehicles() {
       transmissionType: searchParams.get("transmissionType") || undefined,
     };
 
+    fetchVehiclesForSearch(params, search);
+
     setFilters(params);
   }, [searchParams]);
 
@@ -80,7 +83,6 @@ function Vehicles() {
       const data = await getVehicles(filters, search, page);
       if (data) {
         if (page === 1) {
-          console.log(data.vehicles, recentAddedVehicles);
           setTotalItems(data.totalItems);
           const uniqueVehicles = data.vehicles.filter(
             (vehicle: Vehicle) =>
@@ -128,7 +130,9 @@ function Vehicles() {
   };
 
   useEffect(() => {
-    fetchVehicles(filters, search, page);
+    if (page !== 1) {
+      fetchVehicles(filters, search, page);
+    }
   }, [page]);
 
   useEffect(() => {
@@ -139,6 +143,14 @@ function Vehicles() {
 
   return (
     <div className="w-full">
+      {isSmall && (
+        <VehiclesSearchMenu
+          filters={filters}
+          setFilters={setFilters}
+          fetchVehiclesForSearch={fetchVehiclesForSearch}
+          search={search}
+        />
+      )}
       <div className="flex w-full items-center justify-center">
         <div className="mt-4 flex min-h-[1000px] w-full max-w-desktop gap-4 md:w-[95%]">
           {!isSmall && (
@@ -167,9 +179,6 @@ function Vehicles() {
                 emphasisFilterButton={isOpenFilters || filters !== null}
                 defaultValues={{
                   search: search ?? "",
-                }}
-                onSearch={() => {
-                  fetchVehiclesForSearch(filters, search);
                 }}
               />
             </div>

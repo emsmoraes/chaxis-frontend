@@ -19,11 +19,11 @@ function Desktop() {
       <div className="flex h-full w-full max-w-desktop items-center justify-between px-[70px]">
         <div className="flex h-full items-center gap-20">
           <Link href="/" className="flex items-center gap-3">
-            <Image
-              src={isDark ? LightLogo : DarkLogo}
-              alt="logo"
-              className="h-[25px] w-[25px]"
-            />
+            {isDark ? (
+              <Image src={LightLogo} alt="logo" className="h-[25px] w-[25px]" />
+            ) : (
+              <Image src={DarkLogo} alt="logo" className="h-[25px] w-[25px]" />
+            )}
             <span className="block font-jura text-xl font-bold text-font-primary">
               Chaxis
             </span>

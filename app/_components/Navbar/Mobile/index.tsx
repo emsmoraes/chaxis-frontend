@@ -56,11 +56,11 @@ function Mobile() {
   return (
     <div className="flex h-[58px] items-center justify-between bg-foreground px-4">
       <Link href="/" className="flex items-center gap-2">
-        <Image
-          src={isDark ? LightLogo : DarkLogo}
-          alt="logo"
-          className="h-[20px] w-[20px]"
-        />
+        {isDark ? (
+          <Image src={LightLogo} alt="logo" className="h-[20px] w-[20px]" />
+        ) : (
+          <Image src={DarkLogo} alt="logo" className="h-[20px] w-[20px]" />
+        )}
         <span className="block font-jura text-[17px] font-bold text-font-primary">
           Chaxis
         </span>

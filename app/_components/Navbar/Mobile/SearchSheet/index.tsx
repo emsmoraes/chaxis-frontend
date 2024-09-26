@@ -46,6 +46,7 @@ function SearchSheet({ defaultValues, filters, setFilters }: SearchSheetProps) {
     getLastItemAfterHyphen(location.address.state ?? ""),
   );
   const [open, setOpen] = useState(false);
+  const [openSheetSearch, setOpenSheetSearch] = useState(false);
 
   useEffect(() => {
     setDefaultState(getLastItemAfterHyphen(location.address.state ?? ""));
@@ -78,7 +79,9 @@ function SearchSheet({ defaultValues, filters, setFilters }: SearchSheetProps) {
 
     const queryParams: string[] = [];
 
-    queryParams.push(`search=${data.search || ""}`);
+    if (isFilled(data.search)) {
+      queryParams.push(`search=${data.search}`);
+    }
 
     if (filters) {
       if (isFilled(filters.city)) queryParams.push(`city=${filters.city}`);
@@ -106,12 +109,14 @@ function SearchSheet({ defaultValues, filters, setFilters }: SearchSheetProps) {
 
     const queryString = `?${queryParams.join("&")}`;
 
-    console.log(queryString);
-    router.push(`/vehicles${queryString}`);
+    if (queryParams.length !== 0) {
+      router.push(`/vehicles${queryString}`);
+      setOpenSheetSearch(false);
+    }
   };
 
   return (
-    <Sheet>
+    <Sheet onOpenChange={setOpenSheetSearch} open={openSheetSearch}>
       <SheetTrigger asChild>
         <Button className="bg-transparent px-[10px] hover:bg-transparent">
           <LuSearch size={21} className="text-muted-foreground" />

@@ -23,6 +23,8 @@ function FiltersSheet({
 }: FiltersSheetProps) {
   const defaultFiltersValues = filters !== null ? filters : null;
 
+  console.log(filters?.state);
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
@@ -37,7 +39,7 @@ function FiltersSheet({
           onClearFilters={onClearFilters}
           defaultValues={{
             ...defaultFiltersValues,
-            state: filters === null ? defaultState : filters.state,
+            state: filters?.state === undefined ? defaultState : filters?.state,
           }}
         />
       </SheetContent>

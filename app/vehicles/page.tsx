@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useSearchParams } from "next/navigation";
@@ -9,15 +10,20 @@ import { Vehicle } from "../_models/vehicle.model";
 import { getVehicles } from "../_services/http/vehicles";
 import HorizontalCarCard from "../_components/HorizontalCarCard";
 import VerticalCarCard from "../_components/VerticalCarCard";
+import { useInView } from "react-intersection-observer";
 
 function Vehicles() {
   const searchParams = useSearchParams();
   const [filters, setFilters] = useState<IFilters | null>(null);
   const [isOpenFilters, setIsOpenFilters] = useState(false);
   const [recentAddedVehicles, setRecentAddedVehicles] = useState<Vehicle[]>([]);
+  const [totalItems, setTotalItems] = useState(0);
+  const [loading, setLoading] = useState(false);
   const search = searchParams.get("search");
-
+  const [page, setPage] = useState(1);
   const { isSmall } = useResponsive();
+
+  const { ref, inView } = useInView();
 
   const toggleOpenFilters = () => {
     setIsOpenFilters((oldValue) => !oldValue);
@@ -58,27 +64,78 @@ function Vehicles() {
         min: searchParams.get("yearMin") || undefined,
         max: searchParams.get("yearMax") || undefined,
       },
-      manufacturingYear: {
-        min: searchParams.get("manufacturingYearMin")
-          ? Number(searchParams.get("manufacturingYearMin"))
-          : undefined,
-        max: searchParams.get("manufacturingYearMax")
-          ? Number(searchParams.get("manufacturingYearMax"))
-          : undefined,
-      },
       transmissionType: searchParams.get("transmissionType") || undefined,
     };
 
     setFilters(params);
   }, [searchParams]);
 
+  const fetchVehicles = async (
+    filters: IFilters | null,
+    search: string | null,
+    page: number,
+  ) => {
+    setLoading(true);
+    try {
+      const data = await getVehicles(filters, search, page);
+      if (data) {
+        if (page === 1) {
+          console.log(data.vehicles, recentAddedVehicles);
+          setTotalItems(data.totalItems);
+          const uniqueVehicles = data.vehicles.filter(
+            (vehicle: Vehicle) =>
+              !recentAddedVehicles.some((v) => v.id === vehicle.id),
+          );
+          setRecentAddedVehicles(uniqueVehicles);
+        } else {
+          setRecentAddedVehicles((prevVehicles) => [
+            ...prevVehicles,
+            ...data.vehicles,
+          ]);
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao buscar veículos", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchVehiclesForSearch = async (
+    filters: IFilters | null,
+    search: string | null,
+  ) => {
+    setPage(1);
+    setLoading(true);
+    setRecentAddedVehicles([]);
+    try {
+      const data = await getVehicles(filters, search, 1);
+      if (data) {
+        setTotalItems(data.totalItems);
+        setRecentAddedVehicles(data.vehicles);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar veículos", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadMoreVehicles = () => {
+    if (!loading && recentAddedVehicles.length < totalItems) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
+
   useEffect(() => {
-    const getCars = async () => {
-      const { vehicles } = await getVehicles();
-      setRecentAddedVehicles(vehicles);
-    };
-    getCars();
-  }, []);
+    fetchVehicles(filters, search, page);
+  }, [page]);
+
+  useEffect(() => {
+    if (inView) {
+      loadMoreVehicles();
+    }
+  }, [inView]);
 
   return (
     <div className="w-full">
@@ -86,7 +143,9 @@ function Vehicles() {
         <div className="mt-4 flex min-h-[1000px] w-full max-w-desktop gap-4 md:w-[95%]">
           {!isSmall && (
             <div
-              className={`${isOpenFilters ? "sticky" : "hidden"} top-6 h-[92vh] w-[320px] rounded-3xl bg-foreground p-4 lg:pr-2`}
+              className={`${
+                isOpenFilters ? "sticky" : "hidden"
+              } top-6 h-[92vh] w-[320px] rounded-3xl bg-foreground p-4 lg:pr-2`}
             >
               <VehiclesFilter
                 onApplyFilters={onApplyFilters}
@@ -98,7 +157,9 @@ function Vehicles() {
 
           <div className="flex w-full flex-1 flex-col items-center space-y-2 rounded-3xl bg-transparent p-0 pt-0 md:bg-foreground md:p-6 md:pt-3">
             <div
-              className={`hidden items-center justify-center md:flex ${isOpenFilters ? "w-[100%]" : "w-2/3"}`}
+              className={`hidden items-center justify-center md:flex ${
+                isOpenFilters ? "w-[100%]" : "w-2/3"
+              }`}
             >
               <Search
                 onClickFilter={toggleOpenFilters}
@@ -107,24 +168,38 @@ function Vehicles() {
                 defaultValues={{
                   search: search ?? "",
                 }}
+                onSearch={() => {
+                  fetchVehiclesForSearch(filters, search);
+                }}
               />
             </div>
 
-            <h2 className="w-full px-2 pb-6 pt-10 text-start text-[17px] font-semibold dark:text-[#6A6A6A] md:px-0">
-              Publicados recentemente
+            <h2 className="w-full px-2 pb-6 pt-10 text-start text-[16px] font-semibold dark:text-[#6A6A6A] md:px-0">
+              {totalItems} veículos encontrados
             </h2>
-            <div
-              className={`grid w-full grid-cols-1 gap-3 px-2 sm:grid-cols-2 md:grid-cols-3 md:px-0 ${
-                isOpenFilters ? "lg:grid-cols-4" : "lg:grid-cols-5"
-              }`}
-            >
-              {recentAddedVehicles.map((vehicle) =>
-                isSmall ? (
-                  <HorizontalCarCard vehicle={vehicle} key={vehicle.id} />
-                ) : (
-                  <VerticalCarCard vehicle={vehicle} key={vehicle.id} />
-                ),
-              )}
+
+            {loading && page === 1 ? (
+              <div className="flex w-full justify-center">
+                <p>Carregando veículos...</p>
+              </div>
+            ) : (
+              <div
+                className={`grid w-full grid-cols-1 gap-3 px-2 sm:grid-cols-2 md:grid-cols-3 md:px-0 ${
+                  isOpenFilters ? "lg:grid-cols-4" : "lg:grid-cols-5"
+                }`}
+              >
+                {recentAddedVehicles.map((vehicle) =>
+                  isSmall ? (
+                    <HorizontalCarCard vehicle={vehicle} key={vehicle.id} />
+                  ) : (
+                    <VerticalCarCard vehicle={vehicle} key={vehicle.id} />
+                  ),
+                )}
+              </div>
+            )}
+
+            <div ref={ref} className="mt-10 flex w-full justify-center">
+              {loading && page > 1 && <p>Carregando mais veículos...</p>}
             </div>
           </div>
         </div>

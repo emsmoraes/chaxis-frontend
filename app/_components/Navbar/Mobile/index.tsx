@@ -9,7 +9,7 @@ import { useTheme } from "next-themes";
 import MenuSheet from "./MenuSheet";
 import SearchSheet from "./SearchSheet";
 import { IFilters } from "../../VehiclesFilter";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 function Mobile() {
   const { theme } = useTheme();
@@ -17,11 +17,14 @@ function Mobile() {
   const isDark = theme && theme === "dark";
   const searchParams = useSearchParams();
   const search = searchParams.get("search");
+  const pathname = usePathname();
 
   useEffect(() => {
     const params: IFilters = {
       city: searchParams.get("city") || undefined,
-      state: searchParams.get("state") || undefined,
+      state:
+        searchParams.get("state") ||
+        (pathname === "/vehicles" ? "" : undefined),
       brand: searchParams.get("brand") || undefined,
       model: searchParams.get("model") || undefined,
       price: {
@@ -43,14 +46,6 @@ function Mobile() {
       year: {
         min: searchParams.get("yearMin") || undefined,
         max: searchParams.get("yearMax") || undefined,
-      },
-      manufacturingYear: {
-        min: searchParams.get("manufacturingYearMin")
-          ? Number(searchParams.get("manufacturingYearMin"))
-          : undefined,
-        max: searchParams.get("manufacturingYearMax")
-          ? Number(searchParams.get("manufacturingYearMax"))
-          : undefined,
       },
       transmissionType: searchParams.get("transmissionType") || undefined,
     };

@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`antialiased`}>
+      <body className={`pb-16 antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="light">
           <Navbar />
           {children}

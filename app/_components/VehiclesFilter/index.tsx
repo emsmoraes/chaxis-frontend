@@ -53,12 +53,6 @@ const filtersSchema = z.object({
       max: z.string().optional(),
     })
     .optional(),
-  manufacturingYear: z
-    .object({
-      min: z.number().min(1900).optional(),
-      max: z.number().optional(),
-    })
-    .optional(),
   transmissionType: z.string().optional(),
 });
 
@@ -114,7 +108,10 @@ function VehiclesFilter({
     const transformedData = Object.entries(data).reduce((acc, [key, value]) => {
       const typedKey = key as keyof IFilters;
 
-      if (typeof value === "string" && value.toLowerCase() === "all") {
+      if (
+        typeof value === "string" &&
+        (value.toLowerCase() === "all" || value.toLowerCase() === "todas")
+      ) {
         acc[typedKey] = "";
       } else if (typeof value === "object" && value !== null) {
         acc[typedKey] = Object.entries(value).reduce(
@@ -131,6 +128,7 @@ function VehiclesFilter({
       return acc;
     }, {} as IFilters);
 
+    console.log(transformedData);
     onApplyFilters(transformedData);
   };
 
@@ -185,10 +183,6 @@ function VehiclesFilter({
         min: undefined,
         max: undefined,
       },
-      manufacturingYear: {
-        min: undefined,
-        max: undefined,
-      },
       transmissionType: "all",
     });
     setUf("");
@@ -216,8 +210,6 @@ function VehiclesFilter({
         price: (value: any) => form.setValue("price", value),
         mileage: (value: any) => form.setValue("mileage", value),
         year: (value: any) => form.setValue("year", value),
-        manufacturingYear: (value: any) =>
-          form.setValue("manufacturingYear", value),
         brand: (value: string) => form.setValue("brand", value),
       };
 

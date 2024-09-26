@@ -26,6 +26,7 @@ interface SearchProps {
   onClickFilter: () => void;
   emphasisFilterButton: boolean;
   filters?: IFilters | null;
+  onSearch: () => void;
 }
 
 export default function Search({
@@ -33,6 +34,7 @@ export default function Search({
   onClickFilter,
   emphasisFilterButton,
   filters = null,
+  onSearch,
 }: SearchProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -82,7 +84,11 @@ export default function Search({
 
     const queryString = `?${queryParams.join("&")}`;
 
-    router.push(`/vehicles${queryString}`);
+    if (queryParams.length !== 0) {
+      router.push(`/vehicles${queryString}`);
+    }
+
+    onSearch();
   };
 
   return (

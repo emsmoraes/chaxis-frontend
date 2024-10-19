@@ -12,6 +12,8 @@ import HorizontalCarCard from "../_components/HorizontalCarCard";
 import VerticalCarCard from "../_components/VerticalCarCard";
 import { useInView } from "react-intersection-observer";
 import VehiclesSearchMenu from "./_components/VehiclesSearchMenu";
+import { GiCarWheel } from "react-icons/gi";
+import styles from "./styles.module.css";
 
 function Vehicles() {
   const searchParams = useSearchParams();
@@ -207,8 +209,13 @@ function Vehicles() {
               </div>
             )}
 
-            <div ref={ref} className="mt-10 flex w-full justify-center">
-              {loading && page > 1 && <p>Carregando mais veículos...</p>}
+            <div ref={ref} className="flex w-full justify-center py-8">
+              {loading && page > 1 ? (
+                <GiCarWheel
+                  size={40}
+                  className={`animate-spin text-2xl text-font-primary ${styles.spinVariable}`}
+                />
+              ) : null}
             </div>
           </div>
         </div>

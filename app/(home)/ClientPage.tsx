@@ -94,17 +94,13 @@ export default function ClientPage({
                   Suas ultimas visualizações
                 </h2>
                 <div
-                  className={`grid w-full grid-cols-1 gap-3 px-2 sm:grid-cols-2 md:grid-cols-3 md:px-0 ${
+                  className={`w-full gap-3 px-2 sm:grid sm:grid-cols-2 md:grid-cols-3 md:px-0 [&&::-webkit-scrollbar]:hidden ${
                     isOpenFilters ? "lg:grid-cols-4" : "lg:grid-cols-5"
-                  }`}
+                  } flex flex-nowrap overflow-x-auto sm:overflow-visible`}
                 >
-                  {recentAccessVehicles.map((vehicle) =>
-                    isSmall ? (
-                      <HorizontalCarCard vehicle={vehicle} key={vehicle.id} />
-                    ) : (
-                      <VerticalCarCard vehicle={vehicle} key={vehicle.id} />
-                    ),
-                  )}
+                  {recentAccessVehicles.map((vehicle) => (
+                    <VerticalCarCard vehicle={vehicle} key={vehicle.id} />
+                  ))}
                 </div>
               </>
             )}

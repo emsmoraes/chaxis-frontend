@@ -1,5 +1,7 @@
+import { BodyType } from "./bodyType.model";
 import { Brand } from "./brand.model";
 import { Store } from "./store.model";
+import { vehicleType } from "./vehicleType.model";
 
 export interface VehicleImage {
   id: string;
@@ -33,6 +35,8 @@ export interface Vehicle {
   createdAt: string;
   updatedAt: string;
   VehicleImage: VehicleImage[];
-  store: Store;
+  store?: Store;
   make: Brand;
+  vehicleType?: vehicleType;
+  bodyType?: BodyType;
 }

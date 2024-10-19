@@ -7,13 +7,13 @@ export interface VehiclesResponse {
   totalItems: number;
 }
 
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export async function getVehicles(
   filters: IFilters | null,
   searchTerm: string | null,
   page: number = 1,
 ): Promise<VehiclesResponse> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-
   const queryParams = new URLSearchParams();
 
   if (filters) {
@@ -58,5 +58,34 @@ export async function getVehicles(
   }
 
   const data: VehiclesResponse = await response.json();
+  return data;
+}
+
+export async function getVehicleById(vehicleId: string): Promise<Vehicle> {
+  const response = await fetch(`${apiUrl}/vehicles/${vehicleId}`);
+
+  if (!response.ok) {
+    throw new Error(`Erro ao buscar o veículo: ${response.statusText}`);
+  }
+
+  const data: Vehicle = await response.json();
+  return data;
+}
+
+export async function getRelatedVehicles(
+  vehicleId: string,
+  limit: number = 10,
+): Promise<Vehicle[]> {
+  const response = await fetch(
+    `${apiUrl}/related-vehicles/${vehicleId}?limit=${limit}`,
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Erro ao buscar veículos relacionados: ${response.statusText}`,
+    );
+  }
+
+  const data: Vehicle[] = await response.json();
   return data;
 }

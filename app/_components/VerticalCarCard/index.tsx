@@ -20,6 +20,7 @@ import { Button } from "../ui/button";
 import { BsArrowRightShort } from "react-icons/bs";
 import { Vehicle } from "@/app/_models/vehicle.model";
 import useVehicleStore from "@/app/_stores/vehicleStore";
+import Link from "next/link";
 
 interface VerticalCarCardProps {
   vehicle: Vehicle;
@@ -83,44 +84,46 @@ function VerticalCarCard({ vehicle }: VerticalCarCardProps) {
           <SlArrowRight size={5} />
         </button>
       </CardHeader>
-      <CardContent className="group p-3" onClick={addVehicleToStore}>
-        <CardTitle className="text-sm font-bold text-font-primary">
-          {vehicle.make.name} {vehicle.model}
-        </CardTitle>
-        <h2 className="text-[13px] font-medium text-font-primary/80">
-          {vehicle.version}
-        </h2>
-        <div className="flex items-center gap-1">
-          <h3 className="text-[11px] font-medium text-font-primary/60">
-            Ano {vehicle.year}
-          </h3>
-          <div className="h-1 w-1 rounded-full bg-font-primary/60" />
-          <h3 className="text-[11px] font-medium text-font-primary/60">
-            {vehicle.mileage} km
-          </h3>
-        </div>
-
-        <div className="mt-2 flex w-full items-center justify-between">
-          <div className="w-full">
-            <h2 className="overflow-hidden text-ellipsis text-nowrap text-lg font-bold text-font-primary">
-              <span className="text-[14px]">R$</span> {vehicle.price}
-            </h2>
-            <div className="flex gap-1">
-              <LuMapPin className="text-font-primary/60" />
-              <h2 className="text-[11px]">
-                {vehicle.store.city}, {vehicle.store.state}
-              </h2>
-            </div>
+      <Link href={`vehicles/${vehicle.id}`}>
+        <CardContent className="group p-3" onClick={addVehicleToStore}>
+          <CardTitle className="text-sm font-bold text-font-primary">
+            {vehicle.make.name} {vehicle.model}
+          </CardTitle>
+          <h2 className="text-[13px] font-medium text-font-primary/80">
+            {vehicle.version}
+          </h2>
+          <div className="flex items-center gap-1">
+            <h3 className="text-[11px] font-medium text-font-primary/60">
+              Ano {vehicle.year}
+            </h3>
+            <div className="h-1 w-1 rounded-full bg-font-primary/60" />
+            <h3 className="text-[11px] font-medium text-font-primary/60">
+              {vehicle.mileage} km
+            </h3>
           </div>
 
-          <Button
-            size={"icon"}
-            className="h-8 min-w-8 rounded-full opacity-0 transition duration-200 group-hover:opacity-100"
-          >
-            <BsArrowRightShort size={28} />
-          </Button>
-        </div>
-      </CardContent>
+          <div className="mt-2 flex w-full items-center justify-between">
+            <div className="w-full">
+              <h2 className="overflow-hidden text-ellipsis text-nowrap text-lg font-bold text-font-primary">
+                <span className="text-[14px]">R$</span> {vehicle.price}
+              </h2>
+              <div className="flex gap-1">
+                <LuMapPin className="text-font-primary/60" />
+                <h2 className="text-[11px]">
+                  {vehicle.store!.city}, {vehicle.store!.state}
+                </h2>
+              </div>
+            </div>
+
+            <Button
+              size={"icon"}
+              className="h-8 min-w-8 rounded-full opacity-0 transition duration-200 group-hover:opacity-100"
+            >
+              <BsArrowRightShort size={28} />
+            </Button>
+          </div>
+        </CardContent>
+      </Link>
     </Card>
   );
 }

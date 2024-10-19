@@ -1,3 +1,5 @@
+import { File } from "./file.model";
+
 export interface Store {
   id: string;
   name: string;
@@ -12,4 +14,5 @@ export interface Store {
   dealershipId: string;
   createdAt: string;
   updatedAt: string;
+  file?: File[];
 }

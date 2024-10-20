@@ -14,5 +14,6 @@ export interface Store {
   dealershipId: string;
   createdAt: string;
   updatedAt: string;
+  phone: string;
   file?: File[];
 }

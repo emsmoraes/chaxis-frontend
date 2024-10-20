@@ -2,7 +2,6 @@
 
 import HomeBanner from "./_components/HomeBanner";
 import Search from "../_components/Search";
-import ListCategories from "../_components/ListCategories";
 import { useEffect, useState } from "react";
 import VerticalCarCard from "../_components/VerticalCarCard";
 import { Vehicle } from "../_models/vehicle.model";
@@ -87,7 +86,7 @@ export default function ClientPage({
                 }}
               />
             </div>
-            {!isOpenFilters && <ListCategories />}
+            {/* {!isOpenFilters && <ListCategories />} */}
             {recentAccessVehicles && recentAccessVehicles.length > 0 && (
               <>
                 <h2 className="w-full px-2 pb-6 pt-10 text-start text-[17px] font-semibold dark:text-[#6A6A6A] md:px-0">

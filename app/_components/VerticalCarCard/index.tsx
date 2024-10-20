@@ -21,6 +21,7 @@ import { BsArrowRightShort } from "react-icons/bs";
 import { Vehicle } from "@/app/_models/vehicle.model";
 import useVehicleStore from "@/app/_stores/vehicleStore";
 import Link from "next/link";
+import ClientRedirect from "../ClientRedirect";
 
 interface VerticalCarCardProps {
   vehicle: Vehicle;
@@ -47,30 +48,33 @@ function VerticalCarCard({ vehicle }: VerticalCarCardProps) {
   return (
     <Card className="w-full cursor-pointer rounded-3xl dark:bg-[#161616]">
       <CardHeader className="group relative h-[170px] w-full overflow-hidden rounded-t-3xl p-0">
-        <Swiper
-          ref={sliderRef}
-          spaceBetween={0}
-          slidesPerView={1}
-          className="h-full w-full"
-          modules={[Pagination]}
-          pagination={{
-            clickable: true,
-            bulletActiveClass: `${styles.bulletActive}`,
-            renderBullet: (index, className) =>
-              `<span class="${className} ${styles.customBullet}"></span>`,
-          }}
-        >
-          {vehicle.VehicleImage.map((image) => (
-            <SwiperSlide key={image.id}>
-              <Image
-                src={image.url}
-                alt="BMW 320i"
-                fill
-                className="transform object-cover transition-transform duration-300 ease-in-out hover:scale-110"
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        <ClientRedirect to={`/vehicles/${vehicle.id}`}>
+          <Swiper
+            ref={sliderRef}
+            spaceBetween={0}
+            slidesPerView={1}
+            className="h-full w-full"
+            modules={[Pagination]}
+            pagination={{
+              clickable: true,
+              bulletActiveClass: `${styles.bulletActive}`,
+              renderBullet: (index, className) =>
+                `<span class="${className} ${styles.customBullet}"></span>`,
+            }}
+          >
+            {vehicle.VehicleImage.map((image) => (
+              <SwiperSlide key={image.id}>
+                <Image
+                  src={image.url}
+                  alt="BMW 320i"
+                  fill
+                  className="transform object-cover transition-transform duration-300 ease-in-out hover:scale-110"
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </ClientRedirect>
+
         <button
           onClick={handlePrev}
           className={`${styles.customPrev} swiper-button-prev invisible transition-all duration-100 group-hover:visible`}
@@ -84,7 +88,7 @@ function VerticalCarCard({ vehicle }: VerticalCarCardProps) {
           <SlArrowRight size={5} />
         </button>
       </CardHeader>
-      <Link href={`vehicles/${vehicle.id}`}>
+      <Link href={`/vehicles/${vehicle.id}`}>
         <CardContent className="group p-3" onClick={addVehicleToStore}>
           <CardTitle className="text-sm font-bold text-font-primary">
             {vehicle.make.name} {vehicle.model}

@@ -103,7 +103,7 @@ async function Vehicle({ params }: VehicleProps) {
                           {vehicle.store?.name}
                         </h2>
                         <Link
-                          href={"/"}
+                          href={`/stores/${vehicle.store!.id}`}
                           className="text-xs text-font-primary underline"
                         >
                           Ver perfil completo

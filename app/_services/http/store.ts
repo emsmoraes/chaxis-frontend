@@ -43,3 +43,16 @@ export async function indexStoreVehicles(
   const storeVehicles: StoreVehiclesResponse = await response.json();
   return storeVehicles;
 }
+
+export async function indexStores(): Promise<StoreResponse[]> {
+  const response = await fetch(`${apiUrl}/stores`);
+
+  if (!response.ok) {
+    throw new Error(
+      `Error fetching vehicles for store: ${response.statusText}`,
+    );
+  }
+
+  const storeVehicles: StoreResponse[] = await response.json();
+  return storeVehicles;
+}

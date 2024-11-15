@@ -16,7 +16,7 @@ function BackButton() {
     <Button
       onClick={handleBackClick}
       size={"icon"}
-      className="items-start bg-transparent hover:bg-transparent md:items-center"
+      className="items-center bg-transparent hover:bg-transparent md:items-center"
     >
       <IoArrowBackOutline size={25} className="text-font-primary" />
     </Button>

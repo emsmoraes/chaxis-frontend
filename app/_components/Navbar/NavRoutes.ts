@@ -7,8 +7,8 @@ export const links = [
     name: "Veículos",
     path: "/vehicles",
   },
-  {
-    name: "Concessionárias",
-    path: "/dealers",
-  },
+  // {
+  //   name: "Concessionárias",
+  //   path: "/dealers",
+  // },
 ];

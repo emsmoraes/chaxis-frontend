@@ -1,5 +1,8 @@
+"use server";
+
 import { IFilters } from "@/app/_components/VehiclesFilter";
 import { Vehicle } from "@/app/_models/vehicle.model";
+import { revalidatePath } from "next/cache";
 
 export interface VehiclesResponse {
   vehicles: Vehicle[];
@@ -87,5 +90,22 @@ export async function getRelatedVehicles(
   }
 
   const data: Vehicle[] = await response.json();
+  return data;
+}
+
+export async function createVehicle(vehicleData: FormData): Promise<Vehicle> {
+  const response = await fetch(`${apiUrl}/vehicles`, {
+    method: "POST",
+    body: vehicleData,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Erro ao criar o veículo: ${response.statusText}`);
+  }
+
+  const data: Vehicle = await response.json();
+
+  revalidatePath("/");
+
   return data;
 }

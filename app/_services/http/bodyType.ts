@@ -56,3 +56,22 @@ export async function getFamousBodyTypes(): Promise<BodyType[]> {
     return [];
   }
 }
+
+export async function indexBodyTypes(): Promise<BodyType[]> {
+  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+  try {
+    const response = await fetch(`${apiUrl}/body-types`);
+
+    if (!response.ok) {
+      throw new Error(`Erro ao buscar os body types: ${response.statusText}`);
+    }
+
+    const bodyTypes: BodyType[] = await response.json();
+
+    return bodyTypes;
+  } catch (error) {
+    console.error("Erro ao buscar os body types:", error);
+    return [];
+  }
+}

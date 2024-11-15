@@ -87,12 +87,12 @@ function HorizontalCarCard({ vehicle }: HorizontalCarCardProps) {
         </button>
       </CardHeader>
 
-      <Link href={`/vehicles/${vehicle.id}`}>
+      <Link href={`/vehicles/${vehicle.id}`} className="w-full">
         <CardContent
-          className="flex w-[50%] flex-col justify-between p-3"
+          className="flex w-full flex-col justify-between p-3"
           onClick={addVehicleToStore}
         >
-          <div>
+          <div className="w-full">
             <CardTitle className="text-sm font-bold text-font-primary">
               {vehicle.make.name} {vehicle.model}
             </CardTitle>

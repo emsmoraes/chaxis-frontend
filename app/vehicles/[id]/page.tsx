@@ -89,7 +89,7 @@ async function Vehicle({ params }: VehicleProps) {
                           }}
                         >
                           <Image
-                            src={vehicle.store?.file[0].url ?? ""}
+                            src={vehicle.store?.file?.[0].url ?? ""}
                             layout="fill"
                             objectFit="cover"
                             alt="teste"

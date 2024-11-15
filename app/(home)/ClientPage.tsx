@@ -118,7 +118,7 @@ export default function ClientPage({
                 </h2>
                 <div
                   className={`w-full gap-3 px-2 sm:grid sm:grid-cols-2 md:grid-cols-3 md:px-0 [&&::-webkit-scrollbar]:hidden ${
-                    isOpenFilters ? "lg:grid-cols-4" : "lg:grid-cols-5"
+                    isOpenFilters ? "lg:grid-cols-5" : "lg:grid-cols-6"
                   } flex flex-nowrap overflow-x-auto sm:overflow-visible`}
                 >
                   {recentAccessVehicles.map((vehicle) => (
@@ -133,7 +133,7 @@ export default function ClientPage({
             </h2>
             <div
               className={`grid w-full grid-cols-1 gap-3 px-2 sm:grid-cols-2 md:grid-cols-3 md:px-0 ${
-                isOpenFilters ? "lg:grid-cols-4" : "lg:grid-cols-5"
+                isOpenFilters ? "lg:grid-cols-5" : "lg:grid-cols-6"
               }`}
             >
               {recentAddedVehicles.map((vehicle) =>

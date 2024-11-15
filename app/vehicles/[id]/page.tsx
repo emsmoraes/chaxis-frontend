@@ -119,7 +119,7 @@ async function Vehicle({ params }: VehicleProps) {
                           Contato
                         </span>
                         <span className="block text-[17px] font-semibold text-font-primary">
-                          (31) 99666-8888
+                          {vehicle.store?.phone}
                         </span>
                       </div>
 
@@ -129,7 +129,11 @@ async function Vehicle({ params }: VehicleProps) {
                             Membro desde
                           </span>
                           <span className="block text-[17px] font-semibold text-font-primary">
-                            30/08/2024
+                            {vehicle.store?.createdAt
+                              ? moment(vehicle.store.createdAt).format(
+                                  "DD/MM/YYYY",
+                                )
+                              : "Data não disponível"}
                           </span>
                         </div>
                         <div>

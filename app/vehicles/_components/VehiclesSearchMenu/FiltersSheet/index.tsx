@@ -8,7 +8,6 @@ interface FiltersSheetProps {
   filters: IFilters | null;
   onApplyFilters: (filters: IFilters) => void;
   onClearFilters: () => void;
-  defaultState: string | undefined;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
 }
@@ -17,7 +16,6 @@ function FiltersSheet({
   filters,
   onApplyFilters,
   onClearFilters,
-  defaultState,
   open,
   setOpen,
 }: FiltersSheetProps) {
@@ -39,7 +37,6 @@ function FiltersSheet({
           onClearFilters={onClearFilters}
           defaultValues={{
             ...defaultFiltersValues,
-            state: filters?.state === undefined ? defaultState : filters?.state,
           }}
         />
       </SheetContent>

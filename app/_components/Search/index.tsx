@@ -32,7 +32,6 @@ export default function Search({
   defaultValues,
   onClickFilter,
   emphasisFilterButton,
-  filters = null,
 }: SearchProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,46 +42,19 @@ export default function Search({
   const router = useRouter();
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const isFilled = (value: any) => {
-      return (
-        value !== null && value !== undefined && value !== "" && value !== "all"
-      );
-    };
+    const isFilled = (value: unknown) =>
+      value !== null && value !== undefined && value !== "" && value !== "all";
 
-    const queryParams: string[] = [];
+    const currentParams = new URLSearchParams(window.location.search);
 
     if (isFilled(data.search)) {
-      queryParams.push(`search=${data.search}`);
+      currentParams.set("search", data.search!);
+    } else {
+      currentParams.delete("search");
     }
 
-    if (filters) {
-      if (isFilled(filters.city)) queryParams.push(`city=${filters.city}`);
-      if (isFilled(filters.state)) queryParams.push(`state=${filters.state}`);
-      if (isFilled(filters.brand)) queryParams.push(`brand=${filters.brand}`);
-
-      if (isFilled(filters.price?.min))
-        queryParams.push(`priceMin=${filters.price?.min}`);
-      if (isFilled(filters.price?.max))
-        queryParams.push(`priceMax=${filters.price?.max}`);
-
-      if (isFilled(filters.year?.min))
-        queryParams.push(`yearMin=${filters.year?.min}`);
-      if (isFilled(filters.year?.max))
-        queryParams.push(`yearMax=${filters.year?.max}`);
-
-      if (isFilled(filters.mileage?.min))
-        queryParams.push(`mileageMin=${filters.mileage?.min}`);
-      if (isFilled(filters.mileage?.max))
-        queryParams.push(`mileageMax=${filters.mileage?.max}`);
-
-      if (isFilled(filters.transmissionType))
-        queryParams.push(`transmissionType=${filters.transmissionType}`);
-    }
-
-    const queryString = `?${queryParams.join("&")}`;
-
-    router.push(`/vehicles${queryString}`);
+    const queryString = currentParams.toString();
+    router.push(`/vehicles${queryString ? `?${queryString}` : ""}`);
   };
 
   return (

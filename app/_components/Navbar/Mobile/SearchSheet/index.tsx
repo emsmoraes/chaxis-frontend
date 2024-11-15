@@ -7,7 +7,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/app/_components/ui/sheet";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { LuSearch } from "react-icons/lu";
 import FiltersSheet from "../FiltersSheet";
 import { z } from "zod";
@@ -23,16 +23,10 @@ import {
   FormMessage,
 } from "@/app/_components/ui/form";
 import { Input } from "@/app/_components/ui/input";
-import { useLocationFetcher } from "@/app/_hooks/useLocationFetcher";
 
 const formSchema = z.object({
   search: z.string().trim().optional(),
 });
-
-const getLastItemAfterHyphen = (state: string): string => {
-  const parts = state.split("-");
-  return parts.length > 1 ? parts[parts.length - 1].trim() : "";
-};
 
 interface SearchSheetProps {
   defaultValues: z.infer<typeof formSchema>;
@@ -41,16 +35,8 @@ interface SearchSheetProps {
 }
 
 function SearchSheet({ defaultValues, filters, setFilters }: SearchSheetProps) {
-  const { location } = useLocationFetcher();
-  const [defaultState, setDefaultState] = useState<undefined | string>(
-    getLastItemAfterHyphen(location.address.state ?? ""),
-  );
   const [open, setOpen] = useState(false);
   const [openSheetSearch, setOpenSheetSearch] = useState(false);
-
-  useEffect(() => {
-    setDefaultState(getLastItemAfterHyphen(location.address.state ?? ""));
-  }, [location]);
 
   const onApplyFilters = (filters: IFilters) => {
     setFilters(filters);
@@ -59,7 +45,6 @@ function SearchSheet({ defaultValues, filters, setFilters }: SearchSheetProps) {
 
   const onClearFilters = () => {
     setFilters(null);
-    setDefaultState(undefined);
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -152,7 +137,6 @@ function SearchSheet({ defaultValues, filters, setFilters }: SearchSheetProps) {
               )}
             />
             <FiltersSheet
-              defaultState={defaultState}
               filters={filters}
               onApplyFilters={onApplyFilters}
               onClearFilters={onClearFilters}

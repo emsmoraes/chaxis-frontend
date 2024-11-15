@@ -14,6 +14,7 @@ import { useInView } from "react-intersection-observer";
 import VehiclesSearchMenu from "./_components/VehiclesSearchMenu";
 import { GiCarWheel } from "react-icons/gi";
 import styles from "./styles.module.css";
+import { useRouter } from "next/navigation";
 
 function Vehicles() {
   const searchParams = useSearchParams();
@@ -25,6 +26,7 @@ function Vehicles() {
   const search = searchParams.get("search");
   const [page, setPage] = useState(1);
   const { isSmall } = useResponsive();
+  const router = useRouter();
 
   const { ref, inView } = useInView();
 
@@ -35,6 +37,43 @@ function Vehicles() {
   const onApplyFilters = (filters: IFilters) => {
     setFilters(filters);
     setIsOpenFilters(false);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const isFilled = (value: any) => {
+      return (
+        value !== null && value !== undefined && value !== "" && value !== "all"
+      );
+    };
+
+    const queryParams: string[] = [];
+
+    if (filters) {
+      if (isFilled(filters.city)) queryParams.push(`city=${filters.city}`);
+      if (isFilled(filters.state)) queryParams.push(`state=${filters.state}`);
+      if (isFilled(filters.brand)) queryParams.push(`brand=${filters.brand}`);
+
+      if (isFilled(filters.price?.min))
+        queryParams.push(`priceMin=${filters.price?.min}`);
+      if (isFilled(filters.price?.max))
+        queryParams.push(`priceMax=${filters.price?.max}`);
+
+      if (isFilled(filters.year?.min))
+        queryParams.push(`yearMin=${filters.year?.min}`);
+      if (isFilled(filters.year?.max))
+        queryParams.push(`yearMax=${filters.year?.max}`);
+
+      if (isFilled(filters.mileage?.min))
+        queryParams.push(`mileageMin=${filters.mileage?.min}`);
+      if (isFilled(filters.mileage?.max))
+        queryParams.push(`mileageMax=${filters.mileage?.max}`);
+
+      if (isFilled(filters.transmissionType))
+        queryParams.push(`transmissionType=${filters.transmissionType}`);
+    }
+
+    const queryString = `?${queryParams.join("&")}`;
+
+    router.push(`/vehicles${queryString}`);
   };
 
   const onClearFilters = () => {

@@ -2,23 +2,18 @@
 
 import HomeBanner from "./_components/HomeBanner";
 import Search from "../_components/Search";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import VerticalCarCard from "../_components/VerticalCarCard";
 import { Vehicle } from "../_models/vehicle.model";
 import HorizontalCarCard from "../_components/HorizontalCarCard";
 import { useResponsive } from "../_hooks/useResponsive";
 import useVehicleStore from "../_stores/vehicleStore";
 import VehiclesFilter, { IFilters } from "../_components/VehiclesFilter";
-import { useLocationFetcher } from "../_hooks/useLocationFetcher";
+import { useRouter } from "next/navigation";
 
 interface ClientPageProps {
   recentAddedVehicles?: Vehicle[];
 }
-
-const getLastItemAfterHyphen = (state: string): string => {
-  const parts = state.split("-");
-  return parts.length > 1 ? parts[parts.length - 1].trim() : "";
-};
 
 export default function ClientPage({
   recentAddedVehicles = [],
@@ -26,10 +21,6 @@ export default function ClientPage({
   const [isOpenFilters, setIsOpenFilters] = useState(false);
   const recentAccessVehicles = useVehicleStore((state) => state.vehicles);
   const [filters, setFilters] = useState<IFilters | null>(null);
-  const { location } = useLocationFetcher();
-  const [defaultState, setDefaultState] = useState<undefined | string>(
-    getLastItemAfterHyphen(location.address.state ?? ""),
-  );
 
   const { isSmall } = useResponsive();
 
@@ -40,18 +31,52 @@ export default function ClientPage({
   const onApplyFilters = (filters: IFilters) => {
     setFilters(filters);
     setIsOpenFilters(false);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const isFilled = (value: any) => {
+      return (
+        value !== null && value !== undefined && value !== "" && value !== "all"
+      );
+    };
+
+    const queryParams: string[] = [];
+
+    if (filters) {
+      if (isFilled(filters.city)) queryParams.push(`city=${filters.city}`);
+      if (isFilled(filters.state)) queryParams.push(`state=${filters.state}`);
+      if (isFilled(filters.brand)) queryParams.push(`brand=${filters.brand}`);
+
+      if (isFilled(filters.price?.min))
+        queryParams.push(`priceMin=${filters.price?.min}`);
+      if (isFilled(filters.price?.max))
+        queryParams.push(`priceMax=${filters.price?.max}`);
+
+      if (isFilled(filters.year?.min))
+        queryParams.push(`yearMin=${filters.year?.min}`);
+      if (isFilled(filters.year?.max))
+        queryParams.push(`yearMax=${filters.year?.max}`);
+
+      if (isFilled(filters.mileage?.min))
+        queryParams.push(`mileageMin=${filters.mileage?.min}`);
+      if (isFilled(filters.mileage?.max))
+        queryParams.push(`mileageMax=${filters.mileage?.max}`);
+
+      if (isFilled(filters.transmissionType))
+        queryParams.push(`transmissionType=${filters.transmissionType}`);
+    }
+
+    const queryString = `?${queryParams.join("&")}`;
+
+    router.push(`/vehicles${queryString}`);
   };
 
   const onClearFilters = () => {
     setFilters(null);
-    setDefaultState(undefined);
   };
 
   const defaultFiltersValues = filters !== null ? filters : null;
 
-  useEffect(() => {
-    setDefaultState(getLastItemAfterHyphen(location.address.state ?? ""));
-  }, [location]);
+  const router = useRouter();
 
   return (
     <div className="w-full">
@@ -67,7 +92,6 @@ export default function ClientPage({
                 onClearFilters={onClearFilters}
                 defaultValues={{
                   ...defaultFiltersValues,
-                  state: filters === null ? defaultState : filters.state,
                 }}
               />
             </div>

@@ -13,8 +13,8 @@ export interface VehiclesResponse {
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function getVehicles(
-  filters: IFilters | null,
-  searchTerm: string | null,
+  filters?: IFilters | null,
+  searchTerm?: string | null,
   page: number = 1,
 ): Promise<VehiclesResponse> {
   const queryParams = new URLSearchParams();

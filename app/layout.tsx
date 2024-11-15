@@ -3,6 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "./_providers/theme-provider";
 import Navbar from "./_components/Navbar";
 import { Toaster } from "./_components/ui/sonner";
+import Footer from "./_components/Footer";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,10 +17,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`pb-16 antialiased`}>
+      <body>
         <ThemeProvider attribute="class" defaultTheme="light">
-          <Navbar />
-          {children}
+          <div className={`pb-16 antialiased`}>
+            <Navbar />
+            {children}
+          </div>
+          <Footer />
           <Toaster />
         </ThemeProvider>
       </body>

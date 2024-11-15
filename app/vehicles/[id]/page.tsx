@@ -137,7 +137,8 @@ async function Vehicle({ params }: VehicleProps) {
                             Atividade
                           </span>
                           <span className="block text-[17px] font-semibold text-font-primary">
-                            17 anuncios publicados
+                            {vehicle.store?.publishedVehicleCount} anuncios
+                            publicados
                           </span>
                         </div>
                       </div>

@@ -14,4 +14,5 @@ export interface Store {
   updatedAt: string;
   phone: string;
   file?: File[];
+  publishedVehicleCount?: number;
 }

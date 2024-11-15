@@ -9,8 +9,6 @@ export interface Store {
   state: string;
   postalCode: string;
   country: string;
-  latitude: string;
-  longitude: string;
   dealershipId: string;
   createdAt: string;
   updatedAt: string;

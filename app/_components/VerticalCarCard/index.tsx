@@ -22,6 +22,7 @@ import { Vehicle } from "@/app/_models/vehicle.model";
 import useVehicleStore from "@/app/_stores/vehicleStore";
 import Link from "next/link";
 import ClientRedirect from "../ClientRedirect";
+import { formatCurrency } from "@/app/_utils/formatCurrency";
 
 interface VerticalCarCardProps {
   vehicle: Vehicle;
@@ -109,7 +110,8 @@ function VerticalCarCard({ vehicle }: VerticalCarCardProps) {
           <div className="mt-2 flex w-full items-center justify-between">
             <div className="w-full">
               <h2 className="overflow-hidden text-ellipsis text-nowrap text-lg font-bold text-font-primary">
-                <span className="text-[14px]">R$</span> {vehicle.price}
+                <span className="text-[14px]">R$</span>{" "}
+                {formatCurrency(Number(vehicle.price))}
               </h2>
               <div className="flex gap-1">
                 <LuMapPin className="text-font-primary/60" />

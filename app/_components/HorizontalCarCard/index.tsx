@@ -20,6 +20,7 @@ import { Pagination } from "swiper/modules";
 import useVehicleStore from "@/app/_stores/vehicleStore";
 import ClientRedirect from "../ClientRedirect";
 import Link from "next/link";
+import { formatCurrency } from "@/app/_utils/formatCurrency";
 
 interface HorizontalCarCardProps {
   vehicle: Vehicle;
@@ -113,7 +114,8 @@ function HorizontalCarCard({ vehicle }: HorizontalCarCardProps) {
           <div className="mt-2 flex w-full items-center justify-between">
             <div className="w-full">
               <h2 className="overflow-hidden text-ellipsis text-nowrap text-base font-bold text-font-primary">
-                <span className="text-[14px]">R$</span> {vehicle.price}
+                <span className="text-[14px]">R$</span>{" "}
+                {formatCurrency(Number(vehicle.price))}
               </h2>
               <div className="flex gap-1">
                 <LuMapPin className="text-font-primary/60" />

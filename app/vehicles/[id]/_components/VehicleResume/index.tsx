@@ -1,4 +1,5 @@
 import { Vehicle } from "@/app/_models/vehicle.model";
+import { formatCurrency } from "@/app/_utils/formatCurrency";
 import React from "react";
 
 interface VehicleResumeProps {
@@ -21,7 +22,10 @@ function VehicleResume({ vehicle }: VehicleResumeProps) {
               title="Transmissão"
               value={vehicle.transmission}
             />
-            <VehicleResume.Item title="Preço" value={vehicle.price} />
+            <VehicleResume.Item
+              title="Preço"
+              value={`R$ ${formatCurrency(Number(vehicle.price))}`}
+            />
           </div>
         </div>
       </div>
@@ -39,7 +43,10 @@ function VehicleResume({ vehicle }: VehicleResumeProps) {
             title="KM"
             value={vehicle.mileage.toLocaleString("pt-BR")}
           />
-          <VehicleResume.Item title="Preço" value={vehicle.price} />
+          <VehicleResume.Item
+            title="Preço"
+            value={`R$ ${formatCurrency(Number(vehicle.price))}`}
+          />
         </div>
       </div>
     </>

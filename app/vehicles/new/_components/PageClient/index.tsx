@@ -53,6 +53,10 @@ const createVehicleSchema = z.object({
   price: z.string(),
   acceptsTrade: z.string(),
   features: z.string(),
+  doors: z.string(),
+  enginePower: z.string(),
+  hasGnvKit: z.string(),
+  steeringType: z.string(),
 });
 
 const defaultValues = {
@@ -70,6 +74,10 @@ const defaultValues = {
   color: "Preto",
   price: "50000",
   acceptsTrade: "true",
+  doors: "4",
+  enginePower: "1.6",
+  hasGnvKit: "false",
+  steeringType: "Mecânica",
   features: "",
 };
 
@@ -86,7 +94,11 @@ function PageClient({ bodyTypes, allStores }: PageClientProps) {
     defaultValues,
   });
 
-  const onSubmit = async (data: ICreateVehicleSchema) => {
+  const onSubmit = async (
+    data: ICreateVehicleSchema,
+    event: React.FormEvent,
+  ) => {
+    event.preventDefault();
     const formData = new FormData();
 
     formData.append("model", data.model);
@@ -104,6 +116,10 @@ function PageClient({ bodyTypes, allStores }: PageClientProps) {
     formData.append("color", data.color);
     formData.append("price", data.price);
     formData.append("acceptsTrade", data.acceptsTrade);
+    formData.append("doors", data.doors);
+    formData.append("enginePower", data.enginePower);
+    formData.append("hasGnvKit", data.hasGnvKit);
+    formData.append("steeringType", data.steeringType);
 
     currentFeatures.forEach((feature) => {
       formData.append("features", feature);
@@ -394,6 +410,52 @@ function PageClient({ bodyTypes, allStores }: PageClientProps) {
 
           <FormField
             control={form.control}
+            name="steeringType"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Direção</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder="Elétrica" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="enginePower"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Motorização</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder="2.0" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="doors"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Portas</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder="Insira a quantidade de portas"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="acceptsTrade"
             render={({ field }) => (
               <FormItem className="w-full">
@@ -416,6 +478,32 @@ function PageClient({ bodyTypes, allStores }: PageClientProps) {
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="hasGnvKit"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Tem GNV?</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione uma loja" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={"true"}>Sim</SelectItem>
+                      <SelectItem value={"false"}>Não</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="features"
@@ -490,7 +578,9 @@ function PageClient({ bodyTypes, allStores }: PageClientProps) {
 
           <Button
             className="mt-3"
-            onClick={() => form.handleSubmit(onSubmit)()}
+            onClick={(event) =>
+              form.handleSubmit((data) => onSubmit(data, event))()
+            }
           >
             Salvar
           </Button>

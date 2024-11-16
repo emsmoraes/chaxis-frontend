@@ -39,4 +39,8 @@ export interface Vehicle {
   make: Brand;
   vehicleType?: vehicleType;
   bodyType?: BodyType;
+  doors: number;
+  enginePower: string;
+  hasGnvKit: boolean;
+  steeringType: string;
 }

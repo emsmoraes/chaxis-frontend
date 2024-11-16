@@ -46,8 +46,8 @@ function VerticalCarCard({ vehicle }: VerticalCarCardProps) {
   };
 
   return (
-    <Card className="w-full cursor-pointer rounded-3xl dark:bg-[#161616]">
-      <CardHeader className="group relative h-[170px] w-full overflow-hidden rounded-t-3xl p-0">
+    <Card className="group w-full cursor-pointer rounded-3xl dark:bg-[#161616]">
+      <CardHeader className="relative h-[170px] w-full overflow-hidden rounded-t-3xl p-0">
         <ClientRedirect to={`/vehicles/${vehicle.id}`}>
           <Swiper
             ref={sliderRef}
@@ -93,7 +93,7 @@ function VerticalCarCard({ vehicle }: VerticalCarCardProps) {
           <CardTitle className="text-sm font-bold text-font-primary">
             {vehicle.make.name} {vehicle.model}
           </CardTitle>
-          <h2 className="text-[13px] font-medium text-font-primary/80">
+          <h2 className="group-hover:word-wrap-break-word truncate text-[13px] font-medium text-font-primary/80 group-hover:overflow-visible group-hover:whitespace-normal">
             {vehicle.version}
           </h2>
           <div className="flex items-center gap-1">

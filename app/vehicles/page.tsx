@@ -242,7 +242,9 @@ function Vehicles() {
                   isSmall ? (
                     <HorizontalCarCard vehicle={vehicle} key={vehicle.id} />
                   ) : (
-                    <VerticalCarCard vehicle={vehicle} key={vehicle.id} />
+                    <div key={vehicle.id}>
+                      <VerticalCarCard vehicle={vehicle} />
+                    </div>
                   ),
                 )}
               </div>

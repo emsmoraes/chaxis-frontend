@@ -20,7 +20,6 @@ export default function ClientPage({
 }: ClientPageProps) {
   const [isOpenFilters, setIsOpenFilters] = useState(false);
   const recentAccessVehicles = useVehicleStore((state) => state.vehicles);
-  const [filters, setFilters] = useState<IFilters | null>(null);
 
   const { isSmall } = useResponsive();
 
@@ -29,7 +28,6 @@ export default function ClientPage({
   };
 
   const onApplyFilters = (filters: IFilters) => {
-    setFilters(filters);
     setIsOpenFilters(false);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -70,12 +68,6 @@ export default function ClientPage({
     router.push(`/vehicles${queryString}`);
   };
 
-  const onClearFilters = () => {
-    setFilters(null);
-  };
-
-  const defaultFiltersValues = filters !== null ? filters : null;
-
   const router = useRouter();
 
   return (
@@ -89,10 +81,8 @@ export default function ClientPage({
             >
               <VehiclesFilter
                 onApplyFilters={onApplyFilters}
-                onClearFilters={onClearFilters}
-                defaultValues={{
-                  ...defaultFiltersValues,
-                }}
+                onClearFilters={() => {}}
+                defaultValues={undefined}
               />
             </div>
           )}
@@ -103,8 +93,7 @@ export default function ClientPage({
             >
               <Search
                 onClickFilter={toggleOpenFilters}
-                filters={filters}
-                emphasisFilterButton={isOpenFilters || filters !== null}
+                emphasisFilterButton={isOpenFilters}
                 defaultValues={{
                   search: "",
                 }}
@@ -122,7 +111,9 @@ export default function ClientPage({
                   } flex flex-nowrap overflow-x-auto sm:overflow-visible`}
                 >
                   {recentAccessVehicles.map((vehicle) => (
-                    <VerticalCarCard vehicle={vehicle} key={vehicle.id} />
+                    <div className="w-[230px] sm:w-full" key={vehicle.id}>
+                      <VerticalCarCard vehicle={vehicle} />
+                    </div>
                   ))}
                 </div>
               </>
@@ -140,7 +131,9 @@ export default function ClientPage({
                 isSmall ? (
                   <HorizontalCarCard vehicle={vehicle} key={vehicle.id} />
                 ) : (
-                  <VerticalCarCard vehicle={vehicle} key={vehicle.id} />
+                  <div key={vehicle.id}>
+                    <VerticalCarCard vehicle={vehicle} />
+                  </div>
                 ),
               )}
             </div>

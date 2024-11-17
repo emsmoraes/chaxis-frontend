@@ -13,6 +13,7 @@ import Link from "next/link";
 import { Separator } from "@/app/_components/ui/separator";
 import LIstRelatedVehicles from "./_components/LIstRelatedVehicles";
 import ContactButton from "./_components/ContactButton";
+import { formatPhoneNumber } from "@/app/_utils/formatPhoneNumber";
 
 interface VehicleProps {
   params: {
@@ -119,7 +120,7 @@ async function Vehicle({ params }: VehicleProps) {
                           Contato
                         </span>
                         <span className="block text-[17px] font-semibold text-font-primary">
-                          {vehicle.store?.phone}
+                          {formatPhoneNumber(vehicle.store?.phone)}
                         </span>
                       </div>
 

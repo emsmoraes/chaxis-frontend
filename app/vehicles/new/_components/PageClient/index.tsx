@@ -165,6 +165,12 @@ function PageClient({ bodyTypes, allStores }: PageClientProps) {
     setFiles(files.filter((image) => image !== currentImage));
   };
 
+  const removeFeature = (featureParam: string) => {
+    setCurrentFeatures(
+      currentFeatures.filter((feature) => feature !== featureParam),
+    );
+  };
+
   return (
     <div>
       <Form {...form}>
@@ -532,7 +538,12 @@ function PageClient({ bodyTypes, allStores }: PageClientProps) {
 
                     <div className="flex flex-wrap">
                       {currentFeatures.map((feature) => (
-                        <Badge key={feature}>{feature}</Badge>
+                        <Badge
+                          onClick={() => removeFeature(feature)}
+                          key={feature}
+                        >
+                          {feature}
+                        </Badge>
                       ))}
                     </div>
                   </>

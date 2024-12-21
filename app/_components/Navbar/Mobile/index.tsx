@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import DarkLogo from "@/app/_assets/images/logo-dark.png";
 import LightLogo from "@/app/_assets/images/logo-white.png";
 import Link from "next/link";
 import { useTheme } from "next-themes";
@@ -56,11 +55,13 @@ function Mobile() {
   return (
     <div className="flex h-[58px] items-center justify-between bg-foreground px-4">
       <Link href="/" className="flex items-center gap-2">
-        {isDark ? (
-          <Image src={LightLogo} alt="logo" className="h-[20px] w-[20px]" />
-        ) : (
-          <Image src={DarkLogo} alt="logo" className="h-[20px] w-[20px]" />
-        )}
+        <Image
+          src={LightLogo}
+          alt="logo"
+          className={`h-[20px] w-[20px] ${
+            isDark ? "brightness-0 invert" : "brightness-0 hue-rotate-180"
+          }`}
+        />
         <span className="block font-jura text-[17px] font-bold text-font-primary">
           Chaxis
         </span>

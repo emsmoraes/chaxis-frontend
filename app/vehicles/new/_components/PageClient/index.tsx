@@ -107,7 +107,7 @@ function PageClient({ bodyTypes, allStores }: PageClientProps) {
     formData.append("makeId", data.makeId);
     formData.append("bodyTypeId", data.bodyTypeId);
     formData.append("storeId", data.storeId);
-    formData.append("vehicleTypeId", "588618dd-5e98-4b4a-aee8-ab8c83da48bb");
+    formData.append("vehicleTypeId", "65219693-13ef-4b25-8fda-db23fec8d4e3");
     formData.append("year", data.year);
     formData.append("mileage", data.mileage);
     formData.append("transmission", data.transmission);

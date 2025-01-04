@@ -190,7 +190,7 @@ function PageClient({ bodyTypes, allStores }: PageClientProps) {
                       <SelectValue placeholder="Selecione uma marca" />
                     </SelectTrigger>
                     <SelectContent>
-                      {brands!.map((brand) => (
+                      {brands?.map((brand) => (
                         <SelectItem key={brand.id} value={brand.id}>
                           {brand.name} ({brand.alias})
                         </SelectItem>
@@ -260,7 +260,7 @@ function PageClient({ bodyTypes, allStores }: PageClientProps) {
                       <SelectValue placeholder="Selecione uma carroceria" />
                     </SelectTrigger>
                     <SelectContent>
-                      {bodyTypes!.map((bt) => (
+                      {bodyTypes?.map((bt) => (
                         <SelectItem key={bt.id} value={bt.id}>
                           {bt.name}
                         </SelectItem>
@@ -288,7 +288,7 @@ function PageClient({ bodyTypes, allStores }: PageClientProps) {
                       <SelectValue placeholder="Selecione uma loja" />
                     </SelectTrigger>
                     <SelectContent>
-                      {allStores!.map((store) => (
+                      {allStores?.map((store) => (
                         <SelectItem key={store.id} value={store.id}>
                           {store.name}
                         </SelectItem>
@@ -537,7 +537,7 @@ function PageClient({ bodyTypes, allStores }: PageClientProps) {
                     </Button>
 
                     <div className="flex flex-wrap">
-                      {currentFeatures.map((feature) => (
+                      {currentFeatures?.map((feature) => (
                         <Badge
                           onClick={() => removeFeature(feature)}
                           key={feature}
@@ -570,7 +570,7 @@ function PageClient({ bodyTypes, allStores }: PageClientProps) {
           </label>
 
           <div className="flex w-full flex-wrap gap-3">
-            {files.map((fileImg, index) => (
+            {files?.map((fileImg, index) => (
               <div
                 key={index}
                 className="relative h-40 w-40"

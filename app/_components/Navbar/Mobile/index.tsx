@@ -53,34 +53,40 @@ function Mobile() {
   }, [searchParams]);
 
   return (
-    <Suspense fallback={<div>Carregando...</div>}>
-      <div className="flex h-[58px] items-center justify-between bg-foreground px-4">
-        <Link href="/" className="flex items-center gap-2">
-          <Image
-            src={LightLogo}
-            alt="logo"
-            className={`h-[20px] w-[20px] ${
-              isDark ? "brightness-0 invert" : "brightness-0 hue-rotate-180"
-            }`}
-          />
-          <span className="block font-jura text-[17px] font-bold text-font-primary">
-            Chaxis
-          </span>
-        </Link>
+    <div className="flex h-[58px] items-center justify-between bg-foreground px-4">
+      <Link href="/" className="flex items-center gap-2">
+        <Image
+          src={LightLogo}
+          alt="logo"
+          className={`h-[20px] w-[20px] ${
+            isDark ? "brightness-0 invert" : "brightness-0 hue-rotate-180"
+          }`}
+        />
+        <span className="block font-jura text-[17px] font-bold text-font-primary">
+          Chaxis
+        </span>
+      </Link>
 
-        <div className="flex items-center">
-          <SearchSheet
-            filters={filters}
-            setFilters={setFilters}
-            defaultValues={{
-              search: search ?? "",
-            }}
-          />
-          <MenuSheet />
-        </div>
+      <div className="flex items-center">
+        <SearchSheet
+          filters={filters}
+          setFilters={setFilters}
+          defaultValues={{
+            search: search ?? "",
+          }}
+        />
+        <MenuSheet />
       </div>
-    </Suspense>
+    </div>
   );
 }
 
-export default Mobile;
+const Page = () => {
+  return (
+    <Suspense>
+      <Mobile />
+    </Suspense>
+  );
+};
+
+export default Page;

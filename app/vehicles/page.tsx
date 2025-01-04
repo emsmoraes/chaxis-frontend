@@ -183,88 +183,94 @@ function Vehicles() {
   }, [inView]);
 
   return (
-    <Suspense fallback={<div>Carregando...</div>}>
-      <div className="w-full">
-        {isSmall && (
-          <VehiclesSearchMenu
-            filters={filters}
-            setFilters={setFilters}
-            fetchVehiclesForSearch={fetchVehiclesForSearch}
-            search={search}
-          />
-        )}
-        <div className="flex w-full items-center justify-center">
-          <div className="mt-4 flex min-h-[1000px] w-full max-w-desktop gap-4 md:w-[95%]">
-            {!isSmall && (
+    <div className="w-full">
+      {isSmall && (
+        <VehiclesSearchMenu
+          filters={filters}
+          setFilters={setFilters}
+          fetchVehiclesForSearch={fetchVehiclesForSearch}
+          search={search}
+        />
+      )}
+      <div className="flex w-full items-center justify-center">
+        <div className="mt-4 flex min-h-[1000px] w-full max-w-desktop gap-4 md:w-[95%]">
+          {!isSmall && (
+            <div
+              className={`${
+                isOpenFilters ? "sticky" : "hidden"
+              } top-6 h-[92vh] w-[320px] rounded-3xl bg-foreground p-4 lg:pr-2`}
+            >
+              <VehiclesFilter
+                onApplyFilters={onApplyFilters}
+                onClearFilters={onClearFilters}
+                defaultValues={{ ...filters }}
+              />
+            </div>
+          )}
+
+          <div className="flex w-full flex-1 flex-col items-center space-y-2 rounded-3xl bg-transparent p-0 pt-0 md:bg-foreground md:p-6 md:pt-3">
+            <div
+              className={`hidden items-center justify-center md:flex ${
+                isOpenFilters ? "w-[100%]" : "w-2/3"
+              }`}
+            >
+              <Search
+                onClickFilter={toggleOpenFilters}
+                filters={filters}
+                emphasisFilterButton={isOpenFilters || filters !== null}
+                defaultValues={{
+                  search: search ?? "",
+                }}
+              />
+            </div>
+
+            <h2 className="w-full px-2 pb-6 pt-10 text-start text-[16px] font-semibold dark:text-[#6A6A6A] md:px-0">
+              {totalItems} veículos encontrados
+            </h2>
+
+            {loading && page === 1 ? (
+              <div className="flex w-full justify-center">
+                <p>Carregando veículos...</p>
+              </div>
+            ) : (
               <div
-                className={`${
-                  isOpenFilters ? "sticky" : "hidden"
-                } top-6 h-[92vh] w-[320px] rounded-3xl bg-foreground p-4 lg:pr-2`}
+                className={`grid w-full grid-cols-1 gap-3 px-2 sm:grid-cols-2 md:grid-cols-3 md:px-0 ${
+                  isOpenFilters ? "lg:grid-cols-4" : "lg:grid-cols-5"
+                }`}
               >
-                <VehiclesFilter
-                  onApplyFilters={onApplyFilters}
-                  onClearFilters={onClearFilters}
-                  defaultValues={{ ...filters }}
-                />
+                {recentAddedVehicles.map((vehicle) =>
+                  isSmall ? (
+                    <HorizontalCarCard vehicle={vehicle} key={vehicle.id} />
+                  ) : (
+                    <div key={vehicle.id}>
+                      <VerticalCarCard vehicle={vehicle} />
+                    </div>
+                  ),
+                )}
               </div>
             )}
 
-            <div className="flex w-full flex-1 flex-col items-center space-y-2 rounded-3xl bg-transparent p-0 pt-0 md:bg-foreground md:p-6 md:pt-3">
-              <div
-                className={`hidden items-center justify-center md:flex ${
-                  isOpenFilters ? "w-[100%]" : "w-2/3"
-                }`}
-              >
-                <Search
-                  onClickFilter={toggleOpenFilters}
-                  filters={filters}
-                  emphasisFilterButton={isOpenFilters || filters !== null}
-                  defaultValues={{
-                    search: search ?? "",
-                  }}
+            <div ref={ref} className="flex w-full justify-center py-8">
+              {loading && page > 1 ? (
+                <GiCarWheel
+                  size={40}
+                  className={`animate-spin text-2xl text-font-primary ${styles.spinVariable}`}
                 />
-              </div>
-
-              <h2 className="w-full px-2 pb-6 pt-10 text-start text-[16px] font-semibold dark:text-[#6A6A6A] md:px-0">
-                {totalItems} veículos encontrados
-              </h2>
-
-              {loading && page === 1 ? (
-                <div className="flex w-full justify-center">
-                  <p>Carregando veículos...</p>
-                </div>
-              ) : (
-                <div
-                  className={`grid w-full grid-cols-1 gap-3 px-2 sm:grid-cols-2 md:grid-cols-3 md:px-0 ${
-                    isOpenFilters ? "lg:grid-cols-4" : "lg:grid-cols-5"
-                  }`}
-                >
-                  {recentAddedVehicles.map((vehicle) =>
-                    isSmall ? (
-                      <HorizontalCarCard vehicle={vehicle} key={vehicle.id} />
-                    ) : (
-                      <div key={vehicle.id}>
-                        <VerticalCarCard vehicle={vehicle} />
-                      </div>
-                    ),
-                  )}
-                </div>
-              )}
-
-              <div ref={ref} className="flex w-full justify-center py-8">
-                {loading && page > 1 ? (
-                  <GiCarWheel
-                    size={40}
-                    className={`animate-spin text-2xl text-font-primary ${styles.spinVariable}`}
-                  />
-                ) : null}
-              </div>
+              ) : null}
             </div>
           </div>
         </div>
       </div>
-    </Suspense>
+    </div>
   );
 }
 
-export default Vehicles;
+const Page = () => {
+  return (
+    <Suspense>
+      <Vehicles />
+    </Suspense>
+  );
+};
+
+export default Page;

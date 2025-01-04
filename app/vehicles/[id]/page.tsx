@@ -120,7 +120,7 @@ async function Vehicle({ params }: VehicleProps) {
                           Contato
                         </span>
                         <span className="block text-[17px] font-semibold text-font-primary">
-                          {formatPhoneNumber(vehicle.store?.phone)}
+                          {formatPhoneNumber(vehicle.store?.phone ?? "")}
                         </span>
                       </div>
 

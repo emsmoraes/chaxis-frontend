@@ -21,7 +21,7 @@ import { BodyType } from "@/app/_models/bodyType.model";
 import { Store } from "@/app/_models/store.model";
 import { useBrandStore } from "@/app/_stores/brandStore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,10 +31,12 @@ import { Badge } from "@/app/_components/ui/badge";
 import Image from "next/image";
 import { MdUpload } from "react-icons/md";
 import { createVehicle } from "@/app/_services/http/vehicles";
+import { VehicleTypeResponse } from "@/app/_services/http/vehicleType";
 
 interface PageClientProps {
   bodyTypes: BodyType[];
   allStores: Store[];
+  vehicleTypes: VehicleTypeResponse;
 }
 
 const createVehicleSchema = z.object({
@@ -49,6 +51,7 @@ const createVehicleSchema = z.object({
   transmission: z.string(),
   fuelType: z.string(),
   licensePlateEnd: z.string(),
+  vehicleTypeId: z.string(),
   color: z.string(),
   price: z.string(),
   acceptsTrade: z.string(),
@@ -59,35 +62,39 @@ const createVehicleSchema = z.object({
   steeringType: z.string(),
 });
 
-const defaultValues = {
-  model: "Modelo Exemplo",
-  version: "Versão Exemplo",
-  code: "CÓDIGO123",
-  makeId: "",
-  bodyTypeId: "",
-  storeId: "",
-  year: "2024",
-  mileage: "0",
-  transmission: "Automático",
-  fuelType: "Gasolina",
-  licensePlateEnd: "ABC1234",
-  color: "Preto",
-  price: "50000",
-  acceptsTrade: "true",
-  doors: "4",
-  enginePower: "1.6",
-  hasGnvKit: "false",
-  steeringType: "Mecânica",
-  features: "",
-};
-
 export type ICreateVehicleSchema = z.infer<typeof createVehicleSchema>;
 
-function PageClient({ bodyTypes, allStores }: PageClientProps) {
+function PageClient({ bodyTypes, allStores, vehicleTypes }: PageClientProps) {
   const { brands } = useBrandStore();
   const [autoFormat, setAutoFormat] = useState(true);
   const [currentFeatures, setCurrentFeatures] = useState<string[]>([]);
   const [files, setFiles] = useState<File[]>([]);
+
+  const defaultValues = useMemo(() => {
+    const carType = vehicleTypes.find((vt) => vt.name === "Car");
+    return {
+      model: "Modelo Exemplo",
+      version: "Versão Exemplo",
+      code: "CÓDIGO123",
+      makeId: "",
+      bodyTypeId: "",
+      vehicleTypeId: carType?.id ?? "",
+      storeId: "",
+      year: "2024",
+      mileage: "0",
+      transmission: "Automático",
+      fuelType: "Gasolina",
+      licensePlateEnd: "ABC1234",
+      color: "Preto",
+      price: "50000",
+      acceptsTrade: "true",
+      doors: "4",
+      enginePower: "1.6",
+      hasGnvKit: "false",
+      steeringType: "Mecânica",
+      features: "",
+    };
+  }, [vehicleTypes]);
 
   const form = useForm<ICreateVehicleSchema>({
     resolver: zodResolver(createVehicleSchema),
@@ -107,7 +114,7 @@ function PageClient({ bodyTypes, allStores }: PageClientProps) {
     formData.append("makeId", data.makeId);
     formData.append("bodyTypeId", data.bodyTypeId);
     formData.append("storeId", data.storeId);
-    formData.append("vehicleTypeId", "65219693-13ef-4b25-8fda-db23fec8d4e3");
+    formData.append("vehicleTypeId", data.vehicleTypeId);
     formData.append("year", data.year);
     formData.append("mileage", data.mileage);
     formData.append("transmission", data.transmission);
@@ -263,6 +270,34 @@ function PageClient({ bodyTypes, allStores }: PageClientProps) {
                       {bodyTypes?.map((bt) => (
                         <SelectItem key={bt.id} value={bt.id}>
                           {bt.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="vehicleTypeId"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Tipo de veiculo</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione um tipo de veículo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {vehicleTypes?.map((vt) => (
+                        <SelectItem key={vt.id} value={vt.id}>
+                          {vt.name}
                         </SelectItem>
                       ))}
                     </SelectContent>

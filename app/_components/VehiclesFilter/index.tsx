@@ -114,7 +114,7 @@ function VehiclesFilter({
       ) {
         acc[typedKey] = "";
       } else if (typeof value === "object" && value !== null) {
-        acc[typedKey] = Object.entries(value).reduce(
+        (acc as any)[typedKey] = Object.entries(value).reduce(
           (subAcc, [subKey, subValue]) => {
             (subAcc as any)[subKey] = subValue === "all" ? "" : subValue;
             return subAcc;
@@ -214,8 +214,8 @@ function VehiclesFilter({
       };
 
       (Object.keys(fieldsToUpdate) as (keyof any)[]).forEach((key) => {
-        if (defaultValues[key]) {
-          fieldsToUpdate[key]?.(defaultValues[key] as string);
+        if ((defaultValues as any)[key]) {
+          (fieldsToUpdate as any)[key]?.((defaultValues as any)[key] as string);
         }
       });
     }

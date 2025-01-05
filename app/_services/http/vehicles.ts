@@ -13,6 +13,7 @@ export interface VehiclesResponse {
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function getVehicles(
+  limit: number,
   filters?: IFilters | null,
   searchTerm?: string | null,
   page: number = 1,
@@ -53,6 +54,8 @@ export async function getVehicles(
   }
 
   queryParams.append("page", page.toString());
+
+  queryParams.append("limit", JSON.stringify(limit));
 
   const response = await fetch(`${apiUrl}/vehicles?${queryParams.toString()}`);
 

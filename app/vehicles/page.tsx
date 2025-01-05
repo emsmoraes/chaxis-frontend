@@ -121,7 +121,7 @@ function Vehicles() {
   ) => {
     setLoading(true);
     try {
-      const data = await getVehicles(filters, search, page);
+      const data = await getVehicles(15, filters, search, page);
       if (data) {
         if (page === 1) {
           setTotalItems(data.totalItems);
@@ -152,7 +152,7 @@ function Vehicles() {
     setLoading(true);
     setRecentAddedVehicles([]);
     try {
-      const data = await getVehicles(filters, search, 1);
+      const data = await getVehicles(15, filters, search, 1);
       if (data) {
         setTotalItems(data.totalItems);
         setRecentAddedVehicles(data.vehicles);

@@ -17,6 +17,7 @@ interface ListVehiclesProps {
 }
 
 function ListVehicles({ vehiclesResponse, storeId }: ListVehiclesProps) {
+  console.log("Initial vehicles", vehiclesResponse);
   const [vehicles, setVehicles] = useState(vehiclesResponse.vehicles);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);

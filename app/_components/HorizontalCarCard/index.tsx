@@ -61,14 +61,16 @@ function HorizontalCarCard({ vehicle }: HorizontalCarCardProps) {
                 `<span class="${className} ${styles.customBullet}"></span>`,
             }}
           >
-            {vehicle.VehicleImage.map((image) => (
+            {vehicle.VehicleImage.map((image, index) => (
               <SwiperSlide key={image.id}>
-                <Image
-                  src={image.url}
-                  alt="BMW 320i"
-                  fill
-                  className="transform object-cover transition-transform duration-300 ease-in-out hover:scale-110"
-                />
+                <Link href={`/vehicles/${vehicle.id}`}>
+                  <Image
+                    src={image.url}
+                    alt={`imagem ${index} do veìculo`}
+                    fill
+                    className="transform object-cover transition-transform duration-300 ease-in-out hover:scale-110"
+                  />
+                </Link>
               </SwiperSlide>
             ))}
           </Swiper>

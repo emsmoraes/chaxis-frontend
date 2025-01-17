@@ -21,7 +21,6 @@ import { BsArrowRightShort } from "react-icons/bs";
 import { Vehicle } from "@/app/_models/vehicle.model";
 import useVehicleStore from "@/app/_stores/vehicleStore";
 import Link from "next/link";
-import ClientRedirect from "../ClientRedirect";
 import { formatCurrency } from "@/app/_utils/formatCurrency";
 
 interface VerticalCarCardProps {
@@ -49,32 +48,32 @@ function VerticalCarCard({ vehicle }: VerticalCarCardProps) {
   return (
     <Card className="group w-full cursor-pointer rounded-3xl dark:bg-[#161616]">
       <CardHeader className="relative h-[170px] w-full overflow-hidden rounded-t-3xl p-0">
-        <ClientRedirect to={`/vehicles/${vehicle.id}`}>
-          <Swiper
-            ref={sliderRef}
-            spaceBetween={0}
-            slidesPerView={1}
-            className="h-full w-full"
-            modules={[Pagination]}
-            pagination={{
-              clickable: true,
-              bulletActiveClass: `${styles.bulletActive}`,
-              renderBullet: (index, className) =>
-                `<span class="${className} ${styles.customBullet}"></span>`,
-            }}
-          >
-            {vehicle.VehicleImage.map((image) => (
-              <SwiperSlide key={image.id}>
+        <Swiper
+          ref={sliderRef}
+          spaceBetween={0}
+          slidesPerView={1}
+          className="h-full w-full"
+          modules={[Pagination]}
+          pagination={{
+            clickable: true,
+            bulletActiveClass: `${styles.bulletActive}`,
+            renderBullet: (index, className) =>
+              `<span class="${className} ${styles.customBullet}"></span>`,
+          }}
+        >
+          {vehicle.VehicleImage.map((image) => (
+            <SwiperSlide key={image.id}>
+              <Link href={`/vehicles/${vehicle.id}`}>
                 <Image
                   src={image.url}
-                  alt="BMW 320i"
+                  alt="Descrição da imagem"
                   fill
                   className="transform object-cover transition-transform duration-300 ease-in-out hover:scale-110"
                 />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </ClientRedirect>
+              </Link>
+            </SwiperSlide>
+          ))}
+        </Swiper>
 
         <button
           onClick={handlePrev}

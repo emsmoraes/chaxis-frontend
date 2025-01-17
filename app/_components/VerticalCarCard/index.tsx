@@ -61,12 +61,12 @@ function VerticalCarCard({ vehicle }: VerticalCarCardProps) {
               `<span class="${className} ${styles.customBullet}"></span>`,
           }}
         >
-          {vehicle.VehicleImage.map((image) => (
+          {vehicle.VehicleImage.map((image, index) => (
             <SwiperSlide key={image.id}>
               <Link href={`/vehicles/${vehicle.id}`}>
                 <Image
                   src={image.url}
-                  alt="Descrição da imagem"
+                  alt={`imagem ${index} do veìculo`}
                   fill
                   className="transform object-cover transition-transform duration-300 ease-in-out hover:scale-110"
                 />

@@ -68,6 +68,8 @@ function SearchSheet({ defaultValues, filters, setFilters }: SearchSheetProps) {
       queryParams.push(`search=${data.search}`);
     }
 
+    queryParams.push(`page=1`);
+
     if (filters) {
       if (isFilled(filters.city)) queryParams.push(`city=${filters.city}`);
       if (isFilled(filters.state)) queryParams.push(`state=${filters.state}`);
@@ -93,11 +95,8 @@ function SearchSheet({ defaultValues, filters, setFilters }: SearchSheetProps) {
     }
 
     const queryString = `?${queryParams.join("&")}`;
-
-    if (queryParams.length !== 0) {
-      router.push(`/vehicles${queryString}`);
-      setOpenSheetSearch(false);
-    }
+    router.push(`/vehicles${queryString}`);
+    setOpenSheetSearch(false);
   };
 
   return (

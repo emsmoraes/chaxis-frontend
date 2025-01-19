@@ -53,6 +53,8 @@ export default function Search({
       currentParams.delete("search");
     }
 
+    currentParams.set("page", "1");
+
     const queryString = currentParams.toString();
     router.push(`/vehicles${queryString ? `?${queryString}` : ""}`);
   };

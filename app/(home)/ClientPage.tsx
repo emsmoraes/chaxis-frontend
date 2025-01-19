@@ -63,6 +63,8 @@ export default function ClientPage({
         queryParams.push(`transmissionType=${filters.transmissionType}`);
     }
 
+    queryParams.push(`page=1`);
+
     const queryString = `?${queryParams.join("&")}`;
 
     router.push(`/vehicles${queryString}`);

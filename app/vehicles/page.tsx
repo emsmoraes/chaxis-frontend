@@ -10,25 +10,48 @@ import { Vehicle } from "../_models/vehicle.model";
 import { getVehicles } from "../_services/http/vehicles";
 import HorizontalCarCard from "../_components/HorizontalCarCard";
 import VerticalCarCard from "../_components/VerticalCarCard";
-import { useInView } from "react-intersection-observer";
 import VehiclesSearchMenu from "./_components/VehiclesSearchMenu";
-import { GiCarWheel } from "react-icons/gi";
-import styles from "./styles.module.css";
 import { useRouter } from "next/navigation";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+} from "../_components/ui/pagination";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+
+export type IExtendedFilters = IFilters & {
+  page: string;
+};
 
 function Vehicles() {
   const searchParams = useSearchParams();
   const [filters, setFilters] = useState<IFilters | null>(null);
   const [isOpenFilters, setIsOpenFilters] = useState(false);
-  const [recentAddedVehicles, setRecentAddedVehicles] = useState<Vehicle[]>([]);
-  const [totalItems, setTotalItems] = useState(0);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(false);
   const search = searchParams.get("search");
-  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState<{
+    currentPage: number;
+    totalPages: number;
+  }>({
+    currentPage: JSON.parse(searchParams.get("page") ?? "1"),
+    totalPages: 1,
+  });
   const { isSmall } = useResponsive();
   const router = useRouter();
 
-  const { ref, inView } = useInView();
+  const handlePageChange = (newPage: number) => {
+    setPagination((prevState) => ({
+      ...prevState,
+      currentPage: newPage,
+    }));
+
+    const queryParams = new URLSearchParams(window.location.search);
+    queryParams.set("page", newPage.toString());
+
+    router.push(`/vehicles?${queryParams.toString()}`);
+  };
 
   const toggleOpenFilters = () => {
     setIsOpenFilters((oldValue) => !oldValue);
@@ -38,14 +61,16 @@ function Vehicles() {
     setFilters(filters);
     setIsOpenFilters(false);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const isFilled = (value: any) => {
-      return (
-        value !== null && value !== undefined && value !== "" && value !== "all"
-      );
-    };
+    const isFilled = (value: any) =>
+      value !== null && value !== undefined && value !== "" && value !== "all";
 
     const queryParams: string[] = [];
+    const currentParams = new URLSearchParams(window.location.search);
+
+    const searchParam = currentParams.get("search");
+    if (searchParam) {
+      queryParams.push(`search=${searchParam}`);
+    }
 
     if (filters) {
       if (isFilled(filters.city)) queryParams.push(`city=${filters.city}`);
@@ -71,8 +96,9 @@ function Vehicles() {
         queryParams.push(`transmissionType=${filters.transmissionType}`);
     }
 
-    const queryString = `?${queryParams.join("&")}`;
+    queryParams.push(`page=1`);
 
+    const queryString = `?${queryParams.join("&")}`;
     router.push(`/vehicles${queryString}`);
   };
 
@@ -109,53 +135,39 @@ function Vehicles() {
       transmissionType: searchParams.get("transmissionType") || undefined,
     };
 
+    const page = searchParams.get("page") || "1";
+
+    setPagination((old) => ({
+      ...old,
+      currentPage: JSON.parse(page),
+    }));
+
     fetchVehiclesForSearch(params, search);
 
     setFilters(params);
   }, [searchParams]);
 
-  const fetchVehicles = async (
-    filters: IFilters | null,
-    search: string | null,
-    page: number,
-  ) => {
-    setLoading(true);
-    try {
-      const data = await getVehicles(15, filters, search, page);
-      if (data) {
-        if (page === 1) {
-          setTotalItems(data.totalItems);
-          const uniqueVehicles = data.vehicles.filter(
-            (vehicle: Vehicle) =>
-              !recentAddedVehicles.some((v) => v.id === vehicle.id),
-          );
-          setRecentAddedVehicles(uniqueVehicles);
-        } else {
-          setRecentAddedVehicles((prevVehicles) => [
-            ...prevVehicles,
-            ...data.vehicles,
-          ]);
-        }
-      }
-    } catch (error) {
-      console.error("Erro ao buscar veículos", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const fetchVehiclesForSearch = async (
     filters: IFilters | null,
     search: string | null,
   ) => {
-    setPage(1);
     setLoading(true);
-    setRecentAddedVehicles([]);
+    setVehicles([]);
+
     try {
-      const data = await getVehicles(15, filters, search, 1);
+      const data = await getVehicles(
+        15,
+        filters,
+        search,
+        pagination.currentPage,
+      );
       if (data) {
-        setTotalItems(data.totalItems);
-        setRecentAddedVehicles(data.vehicles);
+        setVehicles(data.vehicles);
+
+        setPagination({
+          ...pagination,
+          totalPages: (data as any).totalPages,
+        });
       }
     } catch (error) {
       console.error("Erro ao buscar veículos", error);
@@ -163,24 +175,6 @@ function Vehicles() {
       setLoading(false);
     }
   };
-
-  const loadMoreVehicles = () => {
-    if (!loading && recentAddedVehicles.length < totalItems) {
-      setPage((prevPage) => prevPage + 1);
-    }
-  };
-
-  useEffect(() => {
-    if (page !== 1) {
-      fetchVehicles(filters, search, page);
-    }
-  }, [page]);
-
-  useEffect(() => {
-    if (inView) {
-      loadMoreVehicles();
-    }
-  }, [inView]);
 
   return (
     <div className="w-full">
@@ -224,13 +218,15 @@ function Vehicles() {
               />
             </div>
 
-            <h2 className="w-full px-2 pb-6 pt-10 text-start text-[16px] font-semibold dark:text-[#6A6A6A] md:px-0">
-              {totalItems} veículos encontrados
-            </h2>
-
-            {loading && page === 1 ? (
-              <div className="flex w-full justify-center">
-                <p>Carregando veículos...</p>
+            {loading ? (
+              <div className="flex h-full w-full justify-center">
+                <div className="flex h-fit w-full items-center justify-center gap-2">
+                  <AiOutlineLoading3Quarters
+                    className="animate-spin"
+                    size={20}
+                  />
+                  <p className="text-lg">Carregando veículos...</p>
+                </div>
               </div>
             ) : (
               <div
@@ -238,7 +234,7 @@ function Vehicles() {
                   isOpenFilters ? "lg:grid-cols-4" : "lg:grid-cols-5"
                 }`}
               >
-                {recentAddedVehicles.map((vehicle) =>
+                {vehicles.map((vehicle) =>
                   isSmall ? (
                     <HorizontalCarCard vehicle={vehicle} key={vehicle.id} />
                   ) : (
@@ -250,14 +246,24 @@ function Vehicles() {
               </div>
             )}
 
-            <div ref={ref} className="flex w-full justify-center py-8">
-              {loading && page > 1 ? (
-                <GiCarWheel
-                  size={40}
-                  className={`animate-spin text-2xl text-font-primary ${styles.spinVariable}`}
-                />
-              ) : null}
-            </div>
+            <Pagination>
+              <PaginationContent>
+                {Array.from(
+                  { length: pagination.totalPages },
+                  (_, index) => index + 1,
+                ).map((page: number) => (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      href="#"
+                      onClick={() => handlePageChange(page)}
+                      isActive={page === pagination.currentPage}
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+              </PaginationContent>
+            </Pagination>
           </div>
         </div>
       </div>

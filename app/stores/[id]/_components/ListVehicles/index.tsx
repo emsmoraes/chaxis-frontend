@@ -17,7 +17,6 @@ interface ListVehiclesProps {
 }
 
 function ListVehicles({ vehiclesResponse, storeId }: ListVehiclesProps) {
-  console.log("Initial vehicles", vehiclesResponse);
   const [vehicles, setVehicles] = useState(vehiclesResponse.vehicles);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -68,12 +67,12 @@ function ListVehicles({ vehiclesResponse, storeId }: ListVehiclesProps) {
               )}
             </div>
             <div ref={ref} className="flex w-full justify-center py-8">
-              {loading && page > 1 ? (
+              {loading && (
                 <GiCarWheel
                   size={40}
                   className={`animate-spin text-2xl text-font-primary ${styles.spinVariable}`}
                 />
-              ) : null}
+              )}
             </div>
           </div>
         </div>
